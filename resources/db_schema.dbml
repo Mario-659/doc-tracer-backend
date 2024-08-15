@@ -1,0 +1,99 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Users {
+  id integer [primary key]
+  username varchar
+  password varchar
+  email varchar
+  firstName varchar
+  lastName varchar
+  isSuperuser boolean
+  lastLogin timestampz
+  isActive boolean
+  createdAt timestampz
+  updatedAt timestampz
+}
+
+Table Spectra {
+  id integer [primary key]
+  spectrumSamples JSON // critical!!!
+  measurementDate timestampz
+  createdAt timestampz
+  updatedAt timestampz
+  spectrumTypeId integer
+  deviceId integer
+  sampleId integer
+  userId integer
+}
+
+Table SpectraTypes {
+  id integer [primary key]
+  name varchar
+  description varchar
+  createdAt timestampz
+  updatedAt timestampz
+}
+
+Table Samples {
+  id integer [primary key]
+  description varchar // maybe change type (for all desc)
+  sampleCreationDate timestampz //change prop name
+  coveredMaterialId integer
+  coveringMaterialId integer
+  createdAt timestampz
+  updatedAt timestampz
+  userId integer
+}
+
+Table CoveredMaterials {
+  id integer [primary key]
+  name varchar
+  description varchar
+  createdAt timestampz
+  updatedAt timestampz
+}
+
+Table CoveringMaterials {
+  id integer [primary key]
+  name varchar
+  description varchar
+  manufacturer varchar
+  color varchar // different format????
+  createdAt timestampz
+  updatedAt timestampz
+}
+
+Table SpectrumSimilarities {
+  id integer [primary key]
+  comparisonDate timestampz
+  similarity double
+  baseSpectrumId integer
+  comparedSpectrumId integer
+  createdAt timestampz
+  updatedAt timestampz
+}
+
+
+Table Devices {
+  id integer [primary key]
+  name varchar
+  description varchar
+  manufacturer varchar
+  createdAt timestampz
+  updatedAt timestampz
+}
+
+
+Ref: Spectra.userId > Users.id
+Ref: Spectra.deviceId > Devices.id
+Ref: Spectra.spectrumTypeId > SpectraTypes.id
+Ref: Spectra.sampleId > Samples.id
+
+Ref: SpectrumSimilarities.baseSpectrumId > Spectra.id
+Ref: SpectrumSimilarities.comparedSpectrumId > Spectra.id
+
+
+Ref: Samples.userId > Users.id
+Ref: Samples.coveredMaterialId > CoveredMaterials.id
+Ref: Samples.coveringMaterialId > CoveringMaterials.id
