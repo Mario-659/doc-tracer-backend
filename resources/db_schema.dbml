@@ -13,6 +13,7 @@ Table Users {
   isActive boolean [default: true]
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
 }
 
 Table Spectra {
@@ -25,6 +26,7 @@ Table Spectra {
   userId integer [not null]
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
 
   Indexes {
     (spectrumTypeId)
@@ -40,6 +42,7 @@ Table SpectraTypes {
   description varchar
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
 }
 
 Table Samples {
@@ -50,6 +53,7 @@ Table Samples {
   coveringMaterialId integer [not null]
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
   userId integer [not null]
 
   Indexes {
@@ -65,6 +69,7 @@ Table CoveredMaterials {
   description varchar
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
 }
 
 Table CoveringMaterials {
@@ -75,6 +80,7 @@ Table CoveringMaterials {
   color varchar [not null]
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
 }
 
 Table SpectrumSimilarities {
@@ -85,6 +91,7 @@ Table SpectrumSimilarities {
   comparedSpectrumId integer [not null]
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
 
   Indexes {
     (baseSpectrumId, comparedSpectrumId) [unique]
@@ -98,6 +105,7 @@ Table Devices {
   manufacturer varchar [not null]
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
 }
 
 Ref: Spectra.userId > Users.id
