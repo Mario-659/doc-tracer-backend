@@ -3,87 +3,102 @@
 
 Table Users {
   id integer [primary key]
-  username varchar
-  password varchar
-  email varchar
-  firstName varchar
-  lastName varchar
-  isSuperuser boolean
-  lastLogin timestampz
-  isActive boolean
-  createdAt timestampz
-  updatedAt timestampz
+  username varchar [unique, not null]
+  password varchar [not null]
+  email varchar [unique, not null]
+  firstName varchar [not null]
+  lastName varchar [not null]
+  isSuperuser boolean [default: false]
+  lastLogin timestamp
+  isActive boolean [default: true]
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
 }
 
 Table Spectra {
   id integer [primary key]
-  spectrumSamples JSON // critical!!!
-  measurementDate timestampz
-  createdAt timestampz
-  updatedAt timestampz
-  spectrumTypeId integer
-  deviceId integer
-  sampleId integer
-  userId integer
+  spectrumSamples JSON
+  measurementDate timestamptz [not null]
+  spectrumTypeId integer [not null]
+  deviceId integer [not null]
+  sampleId integer [not null]
+  userId integer [not null]
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
+
+  Indexes {
+    (spectrumTypeId)
+    (deviceId)
+    (sampleId)
+    (userId)
+  }
 }
 
 Table SpectraTypes {
   id integer [primary key]
-  name varchar
+  name varchar [not null]
   description varchar
-  createdAt timestampz
-  updatedAt timestampz
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
 }
 
 Table Samples {
   id integer [primary key]
-  description varchar // maybe change type (for all desc)
-  sampleCreationDate timestampz //change prop name
-  coveredMaterialId integer
-  coveringMaterialId integer
-  createdAt timestampz
-  updatedAt timestampz
-  userId integer
+  description varchar [not null]
+  sampleCreationDate timestamptz
+  coveredMaterialId integer [not null]
+  coveringMaterialId integer [not null]
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
+  userId integer [not null]
+
+  Indexes {
+    (userId)
+    (coveredMaterialId)
+    (coveringMaterialId)
+  }
 }
 
 Table CoveredMaterials {
   id integer [primary key]
-  name varchar
+  name varchar [not null]
   description varchar
-  createdAt timestampz
-  updatedAt timestampz
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
 }
 
 Table CoveringMaterials {
   id integer [primary key]
-  name varchar
+  name varchar [not null]
   description varchar
-  manufacturer varchar
-  color varchar // different format????
-  createdAt timestampz
-  updatedAt timestampz
+  manufacturer varchar [not null]
+  color varchar [not null]
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
 }
 
 Table SpectrumSimilarities {
   id integer [primary key]
-  comparisonDate timestampz
-  similarity double
-  baseSpectrumId integer
-  comparedSpectrumId integer
-  createdAt timestampz
-  updatedAt timestampz
-}
+  comparisonDate timestamptz [not null]
+  similarity double [not null]
+  baseSpectrumId integer [not null]
+  comparedSpectrumId integer [not null]
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
 
+  Indexes {
+    (baseSpectrumId, comparedSpectrumId) [unique]
+  }
+}
 
 Table Devices {
   id integer [primary key]
-  name varchar
+  name varchar [not null]
   description varchar
-  manufacturer varchar
-  createdAt timestampz
-  updatedAt timestampz
+  manufacturer varchar [not null]
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
 }
-
 
 Ref: Spectra.userId > Users.id
 Ref: Spectra.deviceId > Devices.id
@@ -92,7 +107,6 @@ Ref: Spectra.sampleId > Samples.id
 
 Ref: SpectrumSimilarities.baseSpectrumId > Spectra.id
 Ref: SpectrumSimilarities.comparedSpectrumId > Spectra.id
-
 
 Ref: Samples.userId > Users.id
 Ref: Samples.coveredMaterialId > CoveredMaterials.id
