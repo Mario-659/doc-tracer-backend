@@ -1,5 +1,6 @@
 package dl.doctracer.exception
 
+import dl.doctracer.dto.ErrorResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -18,27 +19,37 @@ class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<Any> {
         val errors = ex.bindingResult.fieldErrors.map { it.defaultMessage ?: "Invalid field" }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors)
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(errors)
     }
 
     @ExceptionHandler(BadCredentialsException::class)
     fun handleBadCredentialsException(ex: BadCredentialsException): ResponseEntity<Any> {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password")
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse("Invalid username or password"))
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<Any> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.message)
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(ex.message ?: "Bad request"))
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     fun handleIllegalArgumentException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<Any> {
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(ex.message)
+        return ResponseEntity
+            .status(HttpStatus.METHOD_NOT_ALLOWED)
+            .body(ErrorResponse(ex.message ?: "Method not allowed"))
     }
 
     @ExceptionHandler(Exception::class)
     fun handleAllExceptions(ex: Exception): ResponseEntity<Any> {
         logger.error(ex.message)
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred")
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ErrorResponse("An error occurred"))
     }
 }
