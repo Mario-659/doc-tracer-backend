@@ -10,7 +10,7 @@ import java.time.Instant
 data class Sample(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int = 0,
+    val id: Int? = 0,
 
     @Column(nullable = false)
     val description: String,

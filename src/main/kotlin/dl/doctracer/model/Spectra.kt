@@ -1,6 +1,7 @@
 package dl.doctracer.model
 
 import jakarta.persistence.*
+import org.hibernate.annotations.ColumnTransformer
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.Instant
@@ -10,9 +11,10 @@ import java.time.Instant
 data class Spectra(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int = 0,
+    val id: Int? = 0,
 
-    @Column(columnDefinition = "json")
+    @ColumnTransformer(write = "?::jsonb")
+    @Column(columnDefinition = "jsonb")
     val spectrumSamples: String? = null,
 
     @Column(nullable = false)

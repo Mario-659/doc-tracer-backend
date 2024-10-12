@@ -10,7 +10,7 @@ import java.time.Instant
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int = 0,
+    val id: Int? = 0,
 
     @Column(unique = true, nullable = false)
     val username: String,
