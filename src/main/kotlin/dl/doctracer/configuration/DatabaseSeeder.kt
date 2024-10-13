@@ -1,5 +1,6 @@
 package dl.doctracer.configuration
 
+import dl.doctracer.dto.RegisterRequest
 import dl.doctracer.model.*
 import dl.doctracer.service.*
 import org.slf4j.Logger
@@ -28,11 +29,11 @@ class MockDataSeeder {
         return CommandLineRunner {
             logger.info("Initializing database with mock data")
 
-            var users = listOf(
-                User(null, "admin", "password", "admin@example.com", "john_admin", "doe_admin", true, null, true),
-                User(null, "user1", "password", "user1@example.com", "john", "doe", false, null, true)
+            val registerRequests = listOf(
+                RegisterRequest("admin", "password1", "admin1@gmail.com", "adminName", "adminSurname"), // TODO update when admin registration is implemented
+                RegisterRequest("user1", "password1", "user1@gmail.com", "adminName", "adminSurname")
             )
-            users = users.map { userService.save(it) }
+            val users = registerRequests.map { userService.register(it) }
 
             var devices = listOf(
                 Device(null, "Device A", "Description of Device A", "Manufacturer A"),
