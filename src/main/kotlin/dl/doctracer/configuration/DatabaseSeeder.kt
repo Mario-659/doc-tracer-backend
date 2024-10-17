@@ -18,7 +18,7 @@ class MockDataSeeder {
 
     @Bean
     fun seedDatabase(
-        userService: UserService,
+        userAuthService: UserAuthService,
         spectraService: SpectraService,
         deviceService: DeviceService,
         spectraTypeService: SpectraTypeService,
@@ -33,7 +33,7 @@ class MockDataSeeder {
                 RegisterRequest("admin", "password1", "admin1@gmail.com", "adminName", "adminSurname"), // TODO update when admin registration is implemented
                 RegisterRequest("user1", "password1", "user1@gmail.com", "adminName", "adminSurname")
             )
-            val users = registerRequests.map { userService.register(it) }
+            val users = registerRequests.map { userAuthService.register(it) }
 
             var devices = listOf(
                 Device(null, "Device A", "Description of Device A", "Manufacturer A"),

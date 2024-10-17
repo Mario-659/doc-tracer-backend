@@ -1,13 +1,11 @@
 package dl.doctracer.controller
 
-import dl.doctracer.model.User
-import dl.doctracer.service.UserService
-import org.springframework.http.ResponseEntity
+import dl.doctracer.service.UserAuthService
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
-class UserController(private val userService: UserService) {
+class UserController(private val userAuthService: UserAuthService) {
 
 //    TODO admin-feature
 //    @GetMapping
