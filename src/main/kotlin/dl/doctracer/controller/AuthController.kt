@@ -31,6 +31,7 @@ class AuthController(
     fun changePassword(
         @RequestBody passwordChangeDTO: PasswordChangeRequest
     ): ResponseEntity<String> {
+        userService.changePassword(passwordChangeDTO)
         return ResponseEntity.ok().build()
     }
 }
