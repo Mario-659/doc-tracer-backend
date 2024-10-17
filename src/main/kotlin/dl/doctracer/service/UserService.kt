@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
@@ -39,7 +38,7 @@ class UserService(
             email = registerRequest.email,
             firstName = registerRequest.firstName,
             lastName = registerRequest.lastName,
-            isSuperuser = false, // TODO make possibility to create superuser
+            isSuperuser = false, // TODO admin-feature make possibility to create superuser
             isActive = true
         )
 
@@ -56,20 +55,6 @@ class UserService(
         val token = jwtTokenProvider.generateToken(authentication)
         return LoginResponse(token)
     }
-
-    fun findAll(): List<User> = userRepository.findAll()
-
-    fun findById(id: Int): User? = userRepository.findById(id).orElse(null)
-
-    fun findByUsername(username: String): User? = userRepository.findByUsername(username)
-
-    fun findByEmail(email: String): User? = userRepository.findByEmail(email)
-
-    @Transactional
-    fun save(user: User): User = userRepository.save(user)
-
-    @Transactional
-    fun deleteById(id: Int) = userRepository.deleteById(id)
 
     fun changePassword(passwordChangeReq: PasswordChangeRequest) {
         val authentication = SecurityContextHolder.getContext().authentication
