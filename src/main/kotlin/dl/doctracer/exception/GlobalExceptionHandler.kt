@@ -32,6 +32,13 @@ class GlobalExceptionHandler {
             .body(ErrorResponse("Invalid username or password"))
     }
 
+    @ExceptionHandler(EntityNotFoundException::class)
+    fun handleEntityNotFoundException(ex: EntityNotFoundException): ResponseEntity<Any> {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(ErrorResponse("Entity not found"))
+    }
+
     @ExceptionHandler(UnauthorizedException::class)
     fun handleUnauthorizedException(ex: UnauthorizedException): ResponseEntity<Any> {
         return ResponseEntity
