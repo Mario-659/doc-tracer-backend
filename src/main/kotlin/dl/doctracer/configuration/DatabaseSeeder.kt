@@ -1,6 +1,6 @@
 package dl.doctracer.configuration
 
-import dl.doctracer.dto.RegisterRequest
+import dl.doctracer.dto.auth.RegisterRequest
 import dl.doctracer.model.*
 import dl.doctracer.service.*
 import org.slf4j.Logger

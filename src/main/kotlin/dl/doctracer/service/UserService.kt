@@ -1,13 +1,16 @@
 package dl.doctracer.service
 
-import dl.doctracer.dto.LoginRequest
-import dl.doctracer.dto.LoginResponse
-import dl.doctracer.dto.RegisterRequest
+import dl.doctracer.dto.auth.LoginRequest
+import dl.doctracer.dto.auth.LoginResponse
+import dl.doctracer.dto.auth.PasswordChangeRequest
+import dl.doctracer.dto.auth.RegisterRequest
+import dl.doctracer.exception.UnauthorizedException
 import dl.doctracer.model.User
 import dl.doctracer.repository.UserRepository
 import dl.doctracer.security.JwtTokenProvider
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -67,4 +70,18 @@ class UserService(
 
     @Transactional
     fun deleteById(id: Int) = userRepository.deleteById(id)
+
+    fun changePassword(passwordChangeReq: PasswordChangeRequest) {
+        val authentication = SecurityContextHolder.getContext().authentication
+
+        val loggedInUser = userRepository.findByUsername(authentication.name) ?:
+            throw UnauthorizedException("Could not find user ${authentication.name} in database")
+
+        if (!passwordEncoder.matches(passwordChangeReq.oldPassword, loggedInUser.password)) {
+            throw UnauthorizedException("Old password is incorrect")
+        }
+
+        val updatedUser = loggedInUser.copy(password = passwordEncoder.encode(passwordChangeReq.newPassword))
+        userRepository.save(updatedUser)
+    }
 }

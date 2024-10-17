@@ -1,4 +1,4 @@
-package dl.doctracer.dto
+package dl.doctracer.dto.auth
 
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
