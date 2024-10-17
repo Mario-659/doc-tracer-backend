@@ -25,11 +25,11 @@ class UserAuthService(
     fun register(registerRequest: RegisterRequest): User {
 
         if (userRepository.existsByUsername(registerRequest.username)) {
-            throw IllegalArgumentException("Username '${registerRequest.username}' already exists")
+            throw IllegalArgumentException("Username ${registerRequest.username} already exists")
         }
 
         if (userRepository.existsByEmail(registerRequest.email)) {
-            throw IllegalArgumentException("Email '${registerRequest.email}' is already taken")
+            throw IllegalArgumentException("Email ${registerRequest.email} is already taken")
         }
 
         val user = User(
