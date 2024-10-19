@@ -2,6 +2,7 @@ package dl.doctracer.configuration
 
 import dl.doctracer.dto.auth.RegisterRequest
 import dl.doctracer.model.*
+import dl.doctracer.repository.SpectraRepository
 import dl.doctracer.service.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,13 +14,13 @@ import java.time.Instant
 
 @Configuration
 @Profile("dev")
-class MockDataSeeder {
-    private val logger: Logger = LoggerFactory.getLogger(MockDataSeeder::class.java)
+class DatabaseSeeder {
+    private val logger: Logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
     @Bean
     fun seedDatabase(
         userAuthService: UserAuthService,
-        spectraService: SpectraService,
+        spectraRepository: SpectraRepository,
         deviceService: DeviceService,
         spectraTypeService: SpectraTypeService,
         sampleService: SampleService,
@@ -69,7 +70,7 @@ class MockDataSeeder {
                 Spectra(null, "{ \"spectrumSample\": [1,2,3] }", Instant.now(), spectraTypes[0], devices[0], samples[0], users[0]),
                 Spectra(null, "{ \"spectrumSample\": [4,5,6] }", Instant.now(), spectraTypes[1], devices[1], samples[1], users[1])
             )
-            spectra.forEach { spectraService.save(it) }
+            spectra.forEach { spectraRepository.save(it) }
 
             logger.info("Mock data has been initialized")
         }
