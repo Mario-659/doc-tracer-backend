@@ -126,7 +126,7 @@ class SpectraService(
             deviceId = spectrum.device.id ?: -1,
             deviceName = spectrum.device.name,
             sampleId = spectrum.sample.id ?: -1,
-            createdBy = spectrum.createdAt,
+            createdBy = spectrum.user.username,
             createdAt = spectrum.createdAt,
             updatedAt = spectrum.updatedAt
         )

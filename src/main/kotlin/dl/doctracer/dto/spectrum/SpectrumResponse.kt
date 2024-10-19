@@ -11,7 +11,7 @@ class SpectrumResponse (
     val deviceName: String,
     val deviceId: Int,
     val sampleId: Int,
-    val createdBy: Instant,
+    val createdBy: String,
     val createdAt: Instant,
     val updatedAt: Instant
 )
