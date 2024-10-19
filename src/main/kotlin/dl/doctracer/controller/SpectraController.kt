@@ -3,7 +3,9 @@ package dl.doctracer.controller
 import dl.doctracer.dto.spectrum.CreateSpectrumRequest
 import dl.doctracer.dto.spectrum.SpectrumListElementResponse
 import dl.doctracer.dto.spectrum.SpectrumResponse
+import dl.doctracer.dto.spectrum.UpdateSpectrumRequest
 import dl.doctracer.service.SpectraService
+import org.springframework.boot.autoconfigure.rsocket.RSocketProperties.Server.Spec
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -26,24 +28,10 @@ class SpectraController(private val spectraService: SpectraService) {
         return ResponseEntity.ok().build()
     }
 
-//    @PutMapping("/{id}")
-//    fun updateSpectra(@PathVariable id: Int, @RequestBody updatedSpectra: Spectra): ResponseEntity<Spectra> {
-//        val existingSpectra = spectraService.findById(id)
-//        return if (existingSpectra != null) {
-//            val spectraToUpdate = existingSpectra.copy(
-//                spectrumSamples = updatedSpectra.spectrumSamples,
-//                measurementDate = updatedSpectra.measurementDate,
-//                spectrumType = updatedSpectra.spectrumType,
-//                device = updatedSpectra.device,
-//                sample = updatedSpectra.sample,
-//                user = updatedSpectra.user,
-//                deletedAt = updatedSpectra.deletedAt
-//            )
-//            ResponseEntity.ok(spectraService.save(spectraToUpdate))
-//        } else {
-//            ResponseEntity.notFound().build()
-//        }
-//    }
+    @PutMapping("/{id}")
+    fun updateSpectrum(@PathVariable id: Int, @RequestBody spectrumRequest: UpdateSpectrumRequest): ResponseEntity<SpectrumResponse> =
+        ResponseEntity.ok(spectraService.updateSpectrum(id, spectrumRequest))
+
 
 //    @DeleteMapping("/{id}")
 //    fun deleteSpectra(@PathVariable id: Int): ResponseEntity<Void> {

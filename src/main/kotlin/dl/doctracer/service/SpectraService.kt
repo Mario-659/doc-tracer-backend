@@ -3,6 +3,7 @@ package dl.doctracer.service
 import dl.doctracer.dto.spectrum.CreateSpectrumRequest
 import dl.doctracer.dto.spectrum.SpectrumListElementResponse
 import dl.doctracer.dto.spectrum.SpectrumResponse
+import dl.doctracer.dto.spectrum.UpdateSpectrumRequest
 import dl.doctracer.exception.EntityNotFoundException
 import dl.doctracer.model.Spectra
 import dl.doctracer.repository.*
@@ -42,23 +43,8 @@ class SpectraService(
             .findById(id)
             .getOrElse { throw EntityNotFoundException() }
 
-        return SpectrumResponse(
-            id = spectrum.id ?: -1,
-            spectrumSamples = spectrum.spectrumSamples ?: "",
-            measurementDate = spectrum.measurementDate.toString(),
-            spectrumTypeName = spectrum.spectrumType.name,
-            spectrumTypeId = spectrum.spectrumType.id ?: -1,
-            deviceId = spectrum.device.id ?: -1,
-            deviceName = spectrum.device.name,
-            sampleId = spectrum.sample.id ?: -1,
-            createdBy = spectrum.createdAt.toString(),
-            createdAt = spectrum.createdAt.toString(),
-            updatedAt = spectrum.updatedAt.toString()
-        )
+        return mapToResponse(spectrum)
     }
-
-    @Transactional
-    fun save(spectra: Spectra): Spectra = spectraRepository.save(spectra)
 
     @Transactional
     fun deleteById(id: Int) = spectraRepository.deleteById(id)
@@ -91,4 +77,57 @@ class SpectraService(
 
         spectraRepository.save(newSpectrum)
     }
+
+    fun updateSpectrum(id: Int, updateSpectrumReq: UpdateSpectrumRequest): SpectrumResponse {
+        val existingSpectrum = spectraRepository
+            .findById(id)
+            .orElseThrow { IllegalArgumentException("Spectrum with id: $id not found") }
+
+        val updatedUser = updateSpectrumReq.username?.let { username ->
+            userRepository.findByUsername(username)
+                ?: throw IllegalArgumentException("Username $username not found")
+        } ?: existingSpectrum.user
+
+        val updatedSample = updateSpectrumReq.sampleId?.let { sampleId ->
+            sampleRepository.findById(sampleId)
+                .orElseThrow { IllegalArgumentException("Sample with id: $sampleId not found") }
+        } ?: existingSpectrum.sample
+
+        val updatedDevice = updateSpectrumReq.deviceId?.let { deviceId ->
+            deviceRepository.findById(deviceId)
+                .orElseThrow { IllegalArgumentException("Device with id: $deviceId not found") }
+        } ?: existingSpectrum.device
+
+        val updatedSpectrumType = updateSpectrumReq.spectrumType?.let { spectrumTypeName ->
+            spectrumTypeRepository.findSpectraTypeByName(spectrumTypeName)
+                ?: throw IllegalArgumentException("Spectrum type $spectrumTypeName not found")
+        } ?: existingSpectrum.spectrumType
+
+        val updatedSpectrum = existingSpectrum.copy(
+            spectrumSamples = updateSpectrumReq.spectrumSample ?: existingSpectrum.spectrumSamples,
+            measurementDate = updateSpectrumReq.measurementDate ?: existingSpectrum.measurementDate,
+            user = updatedUser,
+            sample = updatedSample,
+            device = updatedDevice,
+            spectrumType = updatedSpectrumType
+        )
+
+        val savedSpectrum = spectraRepository.save(updatedSpectrum)
+        return mapToResponse(savedSpectrum)
+    }
+
+    private fun mapToResponse(spectrum: Spectra): SpectrumResponse =
+        SpectrumResponse(
+            id = spectrum.id ?: -1,
+            spectrumSamples = spectrum.spectrumSamples ?: "",
+            measurementDate = spectrum.measurementDate,
+            spectrumTypeName = spectrum.spectrumType.name,
+            spectrumTypeId = spectrum.spectrumType.id ?: -1,
+            deviceId = spectrum.device.id ?: -1,
+            deviceName = spectrum.device.name,
+            sampleId = spectrum.sample.id ?: -1,
+            createdBy = spectrum.createdAt,
+            createdAt = spectrum.createdAt,
+            updatedAt = spectrum.updatedAt
+        )
 }
