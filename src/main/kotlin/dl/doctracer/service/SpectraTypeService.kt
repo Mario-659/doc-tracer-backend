@@ -10,11 +10,11 @@ class SpectraTypeService(private val spectraTypeRepository: SpectraTypeRepositor
 
     fun findAll(): List<SpectraType> = spectraTypeRepository.findAll()
 
-    fun findById(id: Int): SpectraType? = spectraTypeRepository.findById(id).orElse(null)
+//    fun findById(id: Int): SpectraType? = spectraTypeRepository.findById(id).orElse(null)
 
     @Transactional
     fun save(spectraType: SpectraType): SpectraType = spectraTypeRepository.save(spectraType)
 
-    @Transactional
-    fun deleteById(id: Int) = spectraTypeRepository.deleteById(id)
+//    @Transactional
+//    fun deleteById(id: Int) = spectraTypeRepository.deleteById(id)
 }
