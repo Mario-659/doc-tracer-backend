@@ -1,16 +1,26 @@
 package dl.doctracer.service
 
+import dl.doctracer.dto.spectrum.CreateSpectrumRequest
 import dl.doctracer.dto.spectrum.SpectrumListElementResponse
 import dl.doctracer.dto.spectrum.SpectrumResponse
 import dl.doctracer.exception.EntityNotFoundException
 import dl.doctracer.model.Spectra
-import dl.doctracer.repository.SpectraRepository
+import dl.doctracer.repository.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrElse
 
 @Service
-class SpectraService(private val spectraRepository: SpectraRepository) {
+class SpectraService(
+    private val spectraRepository: SpectraRepository,
+    private val userRepository: UserRepository,
+    private val sampleRepository: SampleRepository,
+    private val deviceRepository: DeviceRepository,
+    private val spectrumTypeRepository: SpectraTypeRepository
+) {
+    private val customLogger: Logger = LoggerFactory.getLogger(SpectraService::class.java)
 
     fun getAll(): List<SpectrumListElementResponse> {
         val spectra = spectraRepository.findAll()
@@ -52,4 +62,33 @@ class SpectraService(private val spectraRepository: SpectraRepository) {
 
     @Transactional
     fun deleteById(id: Int) = spectraRepository.deleteById(id)
+
+    fun createSpectrum(spectrum: CreateSpectrumRequest) {
+        val user = userRepository
+            .findByUsername(spectrum.username)
+            ?: throw IllegalArgumentException("Username ${spectrum.username} not found")
+
+        val sample = sampleRepository
+            .findById(spectrum.sampleId)
+            .orElseThrow { IllegalArgumentException("Sample with id: ${spectrum.sampleId} not found") }
+
+        val device = deviceRepository
+            .findById(spectrum.deviceId)
+            .orElseThrow { IllegalArgumentException("Device with id: ${spectrum.deviceId} not found") }
+
+        val spectrumType = spectrumTypeRepository
+            .findSpectraTypeByName(spectrum.spectrumType)
+            ?: throw IllegalArgumentException("Device with id: ${spectrum.deviceId} not found")
+
+        val newSpectrum = Spectra(
+            spectrumSamples = spectrum.spectrumSample,
+            measurementDate = spectrum.measurementDate,
+            user = user,
+            sample = sample,
+            device = device,
+            spectrumType = spectrumType
+        )
+
+        spectraRepository.save(newSpectrum)
+    }
 }

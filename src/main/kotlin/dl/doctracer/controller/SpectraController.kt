@@ -1,8 +1,8 @@
 package dl.doctracer.controller
 
+import dl.doctracer.dto.spectrum.CreateSpectrumRequest
 import dl.doctracer.dto.spectrum.SpectrumListElementResponse
 import dl.doctracer.dto.spectrum.SpectrumResponse
-import dl.doctracer.model.Spectra
 import dl.doctracer.service.SpectraService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -21,7 +21,10 @@ class SpectraController(private val spectraService: SpectraService) {
 
 
     @PostMapping
-    fun createSpectra(@RequestBody spectra: Spectra): Spectra = spectraService.save(spectra)
+    fun createSpectrum(@RequestBody spectrum: CreateSpectrumRequest): ResponseEntity<Void> {
+        spectraService.createSpectrum(spectrum)
+        return ResponseEntity.ok().build()
+    }
 
 //    @PutMapping("/{id}")
 //    fun updateSpectra(@PathVariable id: Int, @RequestBody updatedSpectra: Spectra): ResponseEntity<Spectra> {
