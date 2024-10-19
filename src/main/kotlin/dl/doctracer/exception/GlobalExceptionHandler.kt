@@ -60,11 +60,4 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(ex.message ?: "Method not allowed"))
     }
 
-    @ExceptionHandler(Exception::class)
-    fun handleAllExceptions(ex: Exception): ResponseEntity<Any> {
-        logger.error(ex.message)
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ErrorResponse("An error occurred"))
-    }
 }
