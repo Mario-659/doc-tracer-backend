@@ -5,7 +5,7 @@ import dl.doctracer.dto.spectrum.SpectrumListElementResponse
 import dl.doctracer.dto.spectrum.SpectrumResponse
 import dl.doctracer.dto.spectrum.UpdateSpectrumRequest
 import dl.doctracer.service.SpectraService
-import org.springframework.boot.autoconfigure.rsocket.RSocketProperties.Server.Spec
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -23,7 +23,7 @@ class SpectraController(private val spectraService: SpectraService) {
 
 
     @PostMapping
-    fun createSpectrum(@RequestBody spectrum: CreateSpectrumRequest): ResponseEntity<Void> {
+    fun createSpectrum(@RequestBody @Valid spectrum: CreateSpectrumRequest): ResponseEntity<Void> {
         spectraService.createSpectrum(spectrum)
         return ResponseEntity.ok().build()
     }
