@@ -8,3 +8,6 @@ class SpectrumListElementResponse (
     val createdBy: String,
     val createdAt: String
 )
+
+// TODO add device or deviceId
+
