@@ -47,7 +47,7 @@ class SpectraService(
     }
 
     @Transactional
-    fun deleteById(id: Int) = spectraRepository.deleteById(id)
+    fun deleteById(id: Int) = spectraRepository.deleteById(id) // TODO admin-feature user-constraint-operations
 
     fun createSpectrum(spectrum: CreateSpectrumRequest) {
         val user = userRepository

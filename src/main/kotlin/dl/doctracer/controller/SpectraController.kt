@@ -33,13 +33,9 @@ class SpectraController(private val spectraService: SpectraService) {
         ResponseEntity.ok(spectraService.updateSpectrum(id, spectrumRequest))
 
 
-//    @DeleteMapping("/{id}")
-//    fun deleteSpectra(@PathVariable id: Int): ResponseEntity<Void> {
-//        return if (spectraService.findById(id) != null) {
-//            spectraService.deleteById(id)
-//            ResponseEntity.noContent().build()
-//        } else {
-//            ResponseEntity.notFound().build()
-//        }
-//    }
+    @DeleteMapping("/{id}")
+    fun deleteSpectra(@PathVariable id: Int): ResponseEntity<Void> {
+        spectraService.deleteById(id)
+        return ResponseEntity.noContent().build()
+    }
 }
