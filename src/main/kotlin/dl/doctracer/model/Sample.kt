@@ -15,8 +15,8 @@ data class Sample(
     @Column(nullable = false)
     val description: String,
 
-    @Column
-    val sampleCreationDate: Instant? = null,
+    @Column(nullable = false)
+    val sampleCreationDate: Instant,
 
     @ManyToOne
     @JoinColumn(name = "coveredMaterialId", nullable = false)

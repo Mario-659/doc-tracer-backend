@@ -2,6 +2,7 @@ package dl.doctracer.configuration
 
 import dl.doctracer.dto.auth.RegisterRequest
 import dl.doctracer.model.*
+import dl.doctracer.repository.SampleRepository
 import dl.doctracer.repository.SpectraRepository
 import dl.doctracer.service.*
 import org.slf4j.Logger
@@ -23,7 +24,7 @@ class DatabaseSeeder {
         spectraRepository: SpectraRepository,
         deviceService: DeviceService,
         spectraTypeService: SpectraTypeService,
-        sampleService: SampleService,
+        sampleRepository: SampleRepository,
         coveredMaterialService: CoveredMaterialService,
         coveringMaterialService: CoveringMaterialService
     ): CommandLineRunner {
@@ -64,7 +65,7 @@ class DatabaseSeeder {
                 Sample(null, "Sample A", Instant.now(), coveredMaterials[0], coveringMaterials[0], users[0]),
                 Sample(null, "Sample B", Instant.now(), coveredMaterials[1], coveringMaterials[1], users[1]),
             )
-            samples = samples.map { sampleService.save(it) }
+            samples = samples.map { sampleRepository.save(it) }
 
             val spectra = listOf(
                 Spectra(null, "{ \"spectrumSample\": [1,2,3] }", Instant.now(), spectraTypes[0], devices[0], samples[0], users[0]),
