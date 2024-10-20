@@ -12,7 +12,7 @@ data class Device(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = 0,
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     val name: String,
 
     @Column

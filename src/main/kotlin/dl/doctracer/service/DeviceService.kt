@@ -1,5 +1,6 @@
 package dl.doctracer.service
 
+import dl.doctracer.exception.EntityNotFoundException
 import dl.doctracer.model.Device
 import dl.doctracer.repository.DeviceRepository
 import org.springframework.stereotype.Service
@@ -10,7 +11,11 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
 
     fun findAll(): List<Device> = deviceRepository.findAll()
 
-    fun findById(id: Int): Device? = deviceRepository.findById(id).orElse(null)
+    fun getById(id: Int): Device {
+        return deviceRepository
+            .findById(id)
+            .orElseThrow { EntityNotFoundException() }
+    }
 
     @Transactional
     fun save(device: Device): Device = deviceRepository.save(device)
