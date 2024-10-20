@@ -15,7 +15,7 @@ data class Device(
     @Column(nullable = false, unique = true)
     val name: String,
 
-    @Column
+    @Column(length = 1000)
     val description: String? = null,
 
     @Column(nullable = false)
