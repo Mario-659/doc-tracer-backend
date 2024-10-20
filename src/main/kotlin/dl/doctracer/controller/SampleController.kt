@@ -19,33 +19,15 @@ class SampleController(private val sampleService: SampleService) {
     }
 
     @PostMapping
-    fun createSample(@RequestBody sample: Sample): Sample = sampleService.save(sample)
+    fun createSample(@RequestBody sample: Sample): Sample = TODO("not implemented")
 
     @PutMapping("/{id}")
     fun updateSample(@PathVariable id: Int, @RequestBody updatedSample: Sample): ResponseEntity<Sample> {
-        val existingSample = sampleService.findById(id)
-        return if (existingSample != null) {
-            val sampleToUpdate = existingSample.copy(
-                description = updatedSample.description,
-                sampleCreationDate = updatedSample.sampleCreationDate,
-                coveredMaterial = updatedSample.coveredMaterial,
-                coveringMaterial = updatedSample.coveringMaterial,
-                user = updatedSample.user,
-                deletedAt = updatedSample.deletedAt
-            )
-            ResponseEntity.ok(sampleService.save(sampleToUpdate))
-        } else {
-            ResponseEntity.notFound().build()
-        }
+        TODO("not implemented")
     }
 
     @DeleteMapping("/{id}")
     fun deleteSample(@PathVariable id: Int): ResponseEntity<Void> {
-        return if (sampleService.findById(id) != null) {
-            sampleService.deleteById(id)
-            ResponseEntity.noContent().build()
-        } else {
-            ResponseEntity.notFound().build()
-        }
+        TODO("not implemented")
     }
 }
