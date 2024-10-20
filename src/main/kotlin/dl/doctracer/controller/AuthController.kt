@@ -5,7 +5,6 @@ import dl.doctracer.dto.auth.PasswordChangeRequest
 import dl.doctracer.dto.auth.RegisterRequest
 import dl.doctracer.service.UserAuthService
 import jakarta.validation.Valid
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -18,7 +17,7 @@ class AuthController(
     @PostMapping("/register")
     fun registerUser(@Valid @RequestBody registerRequest: RegisterRequest): ResponseEntity<Any> {
         userAuthService.register(registerRequest)
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully")
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/login")
