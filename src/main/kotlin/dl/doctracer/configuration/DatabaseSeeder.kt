@@ -29,7 +29,7 @@ class DatabaseSeeder {
         coveringMaterialService: CoveringMaterialService
     ): CommandLineRunner {
         return CommandLineRunner {
-            logger.info("Initializing database with authentic mock data")
+            logger.info("Initializing database with mock data")
 
             val registerRequests = listOf(
                 RegisterRequest("admin", "password1", "admin1@gmail.com", "Admin", "Administrator"),
@@ -39,11 +39,11 @@ class DatabaseSeeder {
             val users = registerRequests.map { userAuthService.register(it) }
 
             var devices = listOf(
-                Device(null, "VSC800", "Versatile spectral comparator", "Foster + Freeman"),
-                Device(null, "LC-MS-200", "Liquid Chromatography Mass Spectrometry", "Shimadzu"),
+                Device(null, "VSC800-HS", "Designed to meet the requirements of immigration authorities, government agencies, and forensic science laboratories", "Foster + Freeman"),
+                Device(null, "LCMS-2050", "High-Performance Liquid Chromatograph Mass Spectrometer", "Shimadzu"),
                 Device(null, "NMR-500", "Nuclear Magnetic Resonance Spectrometer", "Bruker"),
-                Device(null, "UV-VIS-Pro", "UV-Visible Spectrophotometer", "Agilent"),
-                Device(null, "RAMAN-Scope", "Raman Spectrometer", "Renishaw")
+                Device(null, "Cary 60 UV-Vis", "The Cary 60 UV-Vis spectrophotometer is a double-beam instrument with a powerful xenon lamp that flashes 80 times per second. The xenon lamp only illuminates the sample when data is acquired, protecting sensitive samples from photodegradation, and reducing power consumption. The highly focused beam is ideal for measuring small sample volumes accurately and reproducibly.", "Agilent"),
+                Device(null, "inVia", "The ultimate research-grade confocal Raman microscope delivers outstanding performance and the best data in the shortest time", "RENISHAW")
             )
             devices = devices.map { deviceService.save(it) }
 
