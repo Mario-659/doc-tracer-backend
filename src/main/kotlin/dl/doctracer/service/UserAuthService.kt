@@ -38,8 +38,7 @@ class UserAuthService(
             email = registerRequest.email,
             firstName = registerRequest.firstName,
             lastName = registerRequest.lastName,
-            isSuperuser = false, // TODO admin-feature make possibility to create superuser
-            isActive = true
+            isActive = false
         )
 
         return userRepository.save(user)
