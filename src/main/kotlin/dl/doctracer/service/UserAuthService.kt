@@ -55,6 +55,7 @@ class UserAuthService(
         return LoginResponse(token)
     }
 
+//    TODO create separate controller for user updates stuff and move fun below there, now everyone can send request to change password without logging in
     fun changePassword(passwordChangeReq: PasswordChangeRequest) {
         val authentication = SecurityContextHolder.getContext().authentication
 

@@ -3,10 +3,12 @@ package dl.doctracer.controller
 import dl.doctracer.dto.admin.UserResponse
 import dl.doctracer.service.AdminUserService
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/admin/users")
+@PreAuthorize("hasRole('ADMIN')")
 class AdminUserController(private val adminUserService: AdminUserService) {
 
     @GetMapping
