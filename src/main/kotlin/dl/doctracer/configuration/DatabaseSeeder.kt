@@ -2,8 +2,10 @@ package dl.doctracer.configuration
 
 import dl.doctracer.dto.auth.RegisterRequest
 import dl.doctracer.model.*
+import dl.doctracer.repository.RoleRepository
 import dl.doctracer.repository.SampleRepository
 import dl.doctracer.repository.SpectraRepository
+import dl.doctracer.repository.UserRepository
 import dl.doctracer.service.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -21,22 +23,44 @@ class DatabaseSeeder {
     @Bean
     fun seedDatabase(
         userAuthService: UserAuthService,
+        userRepository: UserRepository,
         spectraRepository: SpectraRepository,
         deviceService: DeviceService,
         spectraTypeService: SpectraTypeService,
         sampleRepository: SampleRepository,
         coveredMaterialService: CoveredMaterialService,
-        coveringMaterialService: CoveringMaterialService
+        coveringMaterialService: CoveringMaterialService,
+        roleRepository: RoleRepository
     ): CommandLineRunner {
         return CommandLineRunner {
             logger.info("Initializing database with mock data")
+
+            // initializing roles, consider moving that to different class, see https://docs.spring.io/spring-boot/docs/2.1.6.RELEASE/reference/html/boot-features-spring-application.html#boot-features-application-events-and-listeners
+            val roles = listOf("ADMIN", "EDITOR", "VIEWER")
+            roles.forEach { roleName ->
+                roleRepository.findByRoleName(roleName) ?: roleRepository.save(Role(roleName = roleName))
+            }
+
+            val adminRole = roleRepository.findByRoleName("ADMIN") ?: throw Exception()
+            val editorRole = roleRepository.findByRoleName("EDITOR") ?: throw Exception()
+            val viewerRole = roleRepository.findByRoleName("VIEWER") ?: throw Exception()
 
             val registerRequests = listOf(
                 RegisterRequest("admin", "password1", "admin1@gmail.com", "Admin", "Administrator"),
                 RegisterRequest("user1", "password1", "user1@gmail.com", "User", "One"),
                 RegisterRequest("user2", "password2", "user2@gmail.com", "User", "Two")
             )
-            val users = registerRequests.map { userAuthService.register(it) }
+            val users = registerRequests
+                .map { userAuthService.register(it) }
+                .map { registeredUser -> registeredUser.copy(isActive = true) }
+                .map { activeUser ->
+                    if (activeUser.username == "admin") {
+                        val updatedRoles = activeUser.roles + adminRole
+                        activeUser.copy(roles = updatedRoles)
+                    }
+                    else activeUser
+                }
+                .map { updatedUser -> userRepository.save(updatedUser) }
 
             var devices = listOf(
                 Device(null, "VSC800-HS", "Designed to meet the requirements of immigration authorities, government agencies, and forensic science laboratories", "Foster + Freeman"),
