@@ -43,7 +43,7 @@ class AdminUserService(
             .orElseThrow { EntityNotFoundException() }
 
         val role = roleRepository
-            .findByRoleName(roleName)
+            .findByRoleName(roleName.uppercase())
             ?: throw IllegalArgumentException("Role not found")
 
         val updatedRoles = user.roles.toMutableSet().apply { add(role) }
@@ -57,7 +57,7 @@ class AdminUserService(
             .orElseThrow { EntityNotFoundException() }
 
         val role = roleRepository
-            .findByRoleName(roleName)
+            .findByRoleName(roleName.uppercase())
             ?: throw IllegalArgumentException("Role not found")
 
         if (!user.roles.contains(role)) {
