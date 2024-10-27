@@ -12,9 +12,15 @@ import org.springframework.web.bind.annotation.*
 class AdminUserController(private val adminUserService: AdminUserService) {
 
     @GetMapping
-    fun listUsers(): ResponseEntity<List<UserResponse>> {
+    fun getUsers(): ResponseEntity<List<UserResponse>> {
         val users = adminUserService.getAllUsers()
         return ResponseEntity.ok(users)
+    }
+
+    @GetMapping("/{id}")
+    fun getUser(@PathVariable id: Int): ResponseEntity<UserResponse> {
+        val user = adminUserService.getUser(id)
+        return ResponseEntity.ok(user)
     }
 
     @PutMapping("/{id}/activate")

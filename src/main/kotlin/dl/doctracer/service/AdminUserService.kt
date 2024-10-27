@@ -2,6 +2,7 @@ package dl.doctracer.service
 
 import dl.doctracer.dto.admin.UserResponse
 import dl.doctracer.exception.EntityNotFoundException
+import dl.doctracer.model.User
 import dl.doctracer.repository.RoleRepository
 import dl.doctracer.repository.UserRepository
 import jakarta.transaction.Transactional
@@ -15,17 +16,13 @@ class AdminUserService(
     fun getAllUsers(): List<UserResponse> =
         userRepository
             .findAll()
-            .map { it ->
-                UserResponse(
-                    id = it.id ?: -1,
-                    username = it.username,
-                    email = it.email,
-                    roles = it.roles.map { role -> role.roleName },
-                    lastLogin = it.lastLogin.toString(),
-                    createdAt = it.createdAt.toString(),
-                    updatedAt = it.updatedAt.toString(),
-                    isActive = it.isActive
-                ) }
+            .map { mapToResponse(it)}
+
+    fun getUser(id: Int): UserResponse =
+        userRepository
+            .findById(id)
+            .map { mapToResponse(it) }
+            .orElseThrow { EntityNotFoundException() }
 
     @Transactional
     fun activateUser(userId: Int) {
@@ -70,4 +67,16 @@ class AdminUserService(
         val updatedRoles = user.roles - role
         userRepository.save(user.copy(roles = updatedRoles))
     }
+
+    private fun mapToResponse(user: User): UserResponse =
+        UserResponse(
+            id = user.id ?: -1,
+            username = user.username,
+            email = user.email,
+            roles = user.roles.map { role -> role.roleName },
+            lastLogin = user.lastLogin.toString(),
+            createdAt = user.createdAt.toString(),
+            updatedAt = user.updatedAt.toString(),
+            isActive = user.isActive
+        )
 }
