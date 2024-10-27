@@ -2,11 +2,13 @@ package dl.doctracer.security
 
 import dl.doctracer.model.User
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class UserDetailsImpl(private val user: User) : UserDetails {
 
-    override fun getAuthorities(): Collection<GrantedAuthority> = emptyList() // TODO define USER, SUPERUSER roles
+    override fun getAuthorities(): Collection<GrantedAuthority> =
+        user.roles.map { role -> SimpleGrantedAuthority("ROLE_${role.roleName}") }
 
     override fun getPassword(): String = user.password
 
