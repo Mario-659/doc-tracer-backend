@@ -4,6 +4,7 @@ import dl.doctracer.dto.auth.LoginRequest
 import dl.doctracer.dto.auth.LoginResponse
 import dl.doctracer.dto.auth.PasswordChangeRequest
 import dl.doctracer.dto.auth.RegisterRequest
+import dl.doctracer.exception.EntityNotFoundException
 import dl.doctracer.exception.UnauthorizedException
 import dl.doctracer.model.User
 import dl.doctracer.repository.UserRepository
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class UserAuthService(
@@ -51,7 +53,15 @@ class UserAuthService(
                 loginRequest.password
             )
         )
+
+        userRepository
+            .findByUsername(loginRequest.username)
+            ?.copy(lastLogin = Instant.now())
+            ?.let { userRepository.save(it) }
+            ?: throw EntityNotFoundException()
+
         val token = jwtTokenProvider.generateToken(authentication)
+
         return LoginResponse(token)
     }
 
