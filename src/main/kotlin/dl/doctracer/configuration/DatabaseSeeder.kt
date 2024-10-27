@@ -35,7 +35,8 @@ class DatabaseSeeder {
         return CommandLineRunner {
             logger.info("Initializing database with mock data")
 
-            // initializing roles, consider moving that to different class, see https://docs.spring.io/spring-boot/docs/2.1.6.RELEASE/reference/html/boot-features-spring-application.html#boot-features-application-events-and-listeners
+            // initializing roles,
+            // TODO consider moving that to different class, see https://docs.spring.io/spring-boot/docs/2.1.6.RELEASE/reference/html/boot-features-spring-application.html#boot-features-application-events-and-listeners
             val roles = listOf("ADMIN", "EDITOR", "VIEWER")
             roles.forEach { roleName ->
                 roleRepository.findByRoleName(roleName) ?: roleRepository.save(Role(roleName = roleName))
@@ -55,7 +56,7 @@ class DatabaseSeeder {
                 .map { registeredUser -> registeredUser.copy(isActive = true) }
                 .map { activeUser ->
                     if (activeUser.username == "admin") {
-                        val updatedRoles = activeUser.roles + adminRole
+                        val updatedRoles = activeUser.roles + adminRole + editorRole + viewerRole
                         activeUser.copy(roles = updatedRoles)
                     }
                     else activeUser
