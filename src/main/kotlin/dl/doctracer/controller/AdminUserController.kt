@@ -1,6 +1,7 @@
 package dl.doctracer.controller
 
 import dl.doctracer.dto.admin.UserResponse
+import dl.doctracer.dto.admin.UserUpdateRequest
 import dl.doctracer.service.AdminUserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -51,6 +52,15 @@ class AdminUserController(private val adminUserService: AdminUserService) {
         @PathVariable roleName: String
     ): ResponseEntity<Void> {
         adminUserService.removeRole(userId, roleName)
+        return ResponseEntity.ok().build()
+    }
+
+//    TODO update that to be transactional
+    @PutMapping("/bulk-update")
+    fun updateUsers(@RequestBody updates: List<UserUpdateRequest>): ResponseEntity<Void> {
+        updates.forEach { update ->
+            adminUserService.updateUser(update)
+        }
         return ResponseEntity.ok().build()
     }
 }
