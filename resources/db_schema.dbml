@@ -1,121 +1,183 @@
-// Use DBML to define your database structure
-// Docs: https://dbml.dbdiagram.io/docs
-
 Table Users {
   id integer [primary key]
   username varchar [unique, not null]
   password varchar [not null]
-  email varchar [unique, not null]
-  firstName varchar [not null]
-  lastName varchar [not null]
-  isSuperuser boolean [default: false]
-  lastLogin timestamp
+  role varchar [not null] // Enum: Admin, Editor, Viewer
   isActive boolean [default: true]
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
   deletedAt timestamptz
 }
 
-Table Spectra {
-  id integer [primary key]
-  spectrumSamples JSON
-  measurementDate timestamptz [not null]
-  spectrumTypeId integer [not null]
-  deviceId integer [not null]
-  sampleId integer [not null]
-  userId integer [not null]
-  createdAt timestamptz [not null, default: `now()`]
-  updatedAt timestamptz [not null, default: `now()`]
-  deletedAt timestamptz
-
-  Indexes {
-    (spectrumTypeId)
-    (deviceId)
-    (sampleId)
-    (userId)
-  }
-}
-
-Table SpectraTypes {
+Table Materials {
   id integer [primary key]
   name varchar [not null]
-  description varchar
+  description text
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
   deletedAt timestamptz
-}
-
-Table Samples {
-  id integer [primary key]
-  description varchar [not null]
-  sampleCreationDate timestamptz
-  coveredMaterialId integer [not null]
-  coveringMaterialId integer [not null]
-  createdAt timestamptz [not null, default: `now()`]
-  updatedAt timestamptz [not null, default: `now()`]
-  deletedAt timestamptz
-  userId integer [not null]
-
-  Indexes {
-    (userId)
-    (coveredMaterialId)
-    (coveringMaterialId)
-  }
-}
-
-Table CoveredMaterials {
-  id integer [primary key]
-  name varchar [not null]
-  description varchar
-  createdAt timestamptz [not null, default: `now()`]
-  updatedAt timestamptz [not null, default: `now()`]
-  deletedAt timestamptz
-}
-
-Table CoveringMaterials {
-  id integer [primary key]
-  name varchar [not null]
-  description varchar
-  manufacturer varchar [not null]
-  color varchar [not null]
-  createdAt timestamptz [not null, default: `now()`]
-  updatedAt timestamptz [not null, default: `now()`]
-  deletedAt timestamptz
-}
-
-Table SpectrumSimilarities {
-  id integer [primary key]
-  comparisonDate timestamptz [not null]
-  similarity double [not null]
-  baseSpectrumId integer [not null]
-  comparedSpectrumId integer [not null]
-  createdAt timestamptz [not null, default: `now()`]
-  updatedAt timestamptz [not null, default: `now()`]
-  deletedAt timestamptz
-
-  Indexes {
-    (baseSpectrumId, comparedSpectrumId) [unique]
-  }
 }
 
 Table Devices {
   id integer [primary key]
   name varchar [not null]
-  description varchar
-  manufacturer varchar [not null]
+  serialNumber varchar [unique, not null]
+  manufacturer varchar
   createdAt timestamptz [not null, default: `now()`]
   updatedAt timestamptz [not null, default: `now()`]
   deletedAt timestamptz
 }
 
-Ref: Spectra.userId > Users.id
-Ref: Spectra.deviceId > Devices.id
-Ref: Spectra.spectrumTypeId > SpectraTypes.id
-Ref: Spectra.sampleId > Samples.id
+Table Measurements {
+  id integer [primary key]
+  coveringMaterialId integer [not null, ref: > Materials.id]
+  coveredMaterialId integer [not null, ref: > Materials.id]
+  userId varchar [not null, ref: > Users.id]
+  deviceId integer [not null, ref: > Devices.id]
+  conditionsId integer [not null, ref: > MeasurementConditions.id]
+  comments text
+  measurementDate timestamptz [not null]
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
 
-Ref: SpectrumSimilarities.baseSpectrumId > Spectra.id
-Ref: SpectrumSimilarities.comparedSpectrumId > Spectra.id
+  Indexes {
+    (coveringMaterialId)
+    (coveredMaterialId)
+    (userId)
+    (deviceId)
+    (conditionsId)
+  }
+}
 
-Ref: Samples.userId > Users.id
-Ref: Samples.coveredMaterialId > CoveredMaterials.id
-Ref: Samples.coveringMaterialId > CoveringMaterials.id
+Table MeasurementConditions {
+  id integer [primary key]
+  imageMode integer
+  lightSource integer
+  ovdLED integer
+  phosDelay integer
+  spotZoom integer
+  iris integer
+  filterLink integer
+  fluorescenceSp integer
+  fluorescenceLp integer
+  bandpassFilter integer
+  diffuser integer
+  cameraFilter1 integer
+  cameraFilter2 integer
+  stageX integer
+  stageY integer
+  IR_LED integer
+  colorIR integer
+  digitalZoom integer
+  dimmerLevel integer
+  brightness integer
+  gamma integer
+  exposure float
+  integration float
+  gain integer
+  sharpness integer
+  focus integer
+  lensFocus integer
+
+  description varchar
+
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
+}
+
+Enum SpectralType {
+  Reflectance
+  Absorption
+  Fluorescence
+  Transmittance
+  Normalised
+  Differential
+  Average
+}
+
+Table Samples {
+  id integer [primary key]
+  measurementId integer [not null, ref: > Measurements.id]
+  name varchar [not null]
+  spectralData jsonb [not null]
+  type SpectralType [not null]
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
+
+  Indexes {
+    (measurementId)
+  }
+}
+
+Table Files {
+  id integer [primary key]
+  measurementId integer [not null, ref: > Measurements.id]
+  fileName varchar [not null]
+  fileType varchar [not null]
+  content bytea
+  metadata jsonb
+
+  createdAt timestamptz [not null, default: `now()`]
+  updatedAt timestamptz [not null, default: `now()`]
+  deletedAt timestamptz
+
+  Indexes {
+    (measurementId)
+  }
+}
+
+// CIE can be calculated based on sample
+// Table CieDiagram {
+//   id integer [primary key]
+//   sampleId integer [not null, ref: > Samples.id]
+//   type varchar
+//   viewing_angle integer
+//   illuminant varchar
+
+//   X float
+//   Y float
+//   Z float
+//   x float [not null]
+//   y float [not null]
+//   z float [not null]
+//   L_star float
+//   a_star float
+//   b_star float
+//   u_star float
+//   v_star float
+
+//   createdAt timestamptz [not null, default: `now()`]
+//   updatedAt timestamptz [not null, default: `now()`]
+//   deletedAt timestamptz
+
+//   Indexes {
+//     (sampleId)
+//   }
+// }
+
+// Table CieArray {
+//   id integer [primary key]
+//   cieDataId integer [not null, ref: > CieData.id]
+//   number integer
+//   X float
+//   Y float
+//   Z float
+//   x float [not null]
+//   y float [not null]
+//   z float [not null]
+//   L_star float
+//   a_star float
+//   b_star float
+//   u_star float
+//   v_star float
+
+//   createdAt timestamptz [not null, default: `now()`]
+//   updatedAt timestamptz [not null, default: `now()`]
+//   deletedAt timestamptz
+
+//     Indexes {
+//     (cieDataId)
+//   }
+// }
