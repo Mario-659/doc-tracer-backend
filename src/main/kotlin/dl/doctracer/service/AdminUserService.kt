@@ -73,11 +73,16 @@ class AdminUserService(
     fun updateUser(update: UserUpdateRequest) {
         val user = userRepository.findById(update.id).orElseThrow { EntityNotFoundException() }
 
-        val roles = update.roles.map {
+        val rolesToAdd = update.rolesToAdd.map {
                 roleRepository.findByRoleName(it.uppercase()) ?: throw IllegalArgumentException("Role $it not found")
             }.toSet()
 
-        userRepository.save(user.copy(roles = roles, isActive = update.isActive))
+        val rolesToRemove = update.rolesToRemove.map {
+            roleRepository.findByRoleName(it.uppercase()) ?: throw IllegalArgumentException("Role $it not found")
+        }.toSet()
+
+        val updatedRoles = user.roles - rolesToRemove + rolesToAdd
+        userRepository.save(user.copy(roles = updatedRoles, isActive = update.isActive))
     }
 
     private fun mapToResponse(user: User): UserResponse = UserResponse(
