@@ -8,8 +8,4 @@ class SpectralDataMapper {
     fun map(request: SpectralData): String {
         return ObjectMapper().writeValueAsString(request)
     }
-
-    fun mapToResponse(data: String): SpectralData {
-        return ObjectMapper().readValue(data, SpectralData::class.java)
-    }
 }
