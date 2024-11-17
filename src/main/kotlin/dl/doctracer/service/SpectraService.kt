@@ -5,7 +5,6 @@ import dl.doctracer.dto.spectrum.SpectrumListElementResponse
 import dl.doctracer.dto.spectrum.SpectrumResponse
 import dl.doctracer.dto.spectrum.UpdateSpectrumRequest
 import dl.doctracer.exception.EntityNotFoundException
-import dl.doctracer.model.Spectra
 import dl.doctracer.repository.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

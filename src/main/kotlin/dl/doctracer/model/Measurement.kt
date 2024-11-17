@@ -1,40 +1,42 @@
 package dl.doctracer.model
 
 import jakarta.persistence.*
-import org.hibernate.annotations.ColumnTransformer
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.Instant
 
 @Entity
-@Table(name = "spectra")
-data class Spectra(
+@Table(name = "measurements")
+data class Measurement(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int? = 0,
-
-    @ColumnTransformer(write = "?::jsonb")
-    @Column(columnDefinition = "jsonb")
-    val spectrumSamples: String? = null,
-
-    @Column(nullable = false)
-    val measurementDate: Instant,
+    val id: Int? = null,
 
     @ManyToOne
-    @JoinColumn(name = "spectrumTypeId", nullable = false)
-    val spectrumType: SpectraType,
+    @JoinColumn(name = "coveringMaterialId", nullable = false)
+    val coveringMaterial: CoveringMaterial,
+
+    @ManyToOne
+    @JoinColumn(name = "coveredMaterialId", nullable = false)
+    val coveredMaterial: CoveredMaterial,
+
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    val user: User,
 
     @ManyToOne
     @JoinColumn(name = "deviceId", nullable = false)
     val device: Device,
 
     @ManyToOne
-    @JoinColumn(name = "sampleId", nullable = false)
-    val sample: Sample,
+    @JoinColumn(name = "conditionsId", nullable = false)
+    val conditions: MeasurementConditions,
 
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    val user: User,
+    @Column(columnDefinition = "TEXT")
+    val comments: String? = null,
+
+    @Column(nullable = false)
+    val measurementDate: Instant,
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

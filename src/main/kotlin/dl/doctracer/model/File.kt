@@ -1,14 +1,13 @@
 package dl.doctracer.model
 
 import jakarta.persistence.*
-import org.hibernate.annotations.ColumnTransformer
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.Instant
 
 @Entity
-@Table(name = "samples")
-data class Sample(
+@Table(name = "files")
+data class File(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null,
@@ -18,15 +17,17 @@ data class Sample(
     val measurement: Measurement,
 
     @Column(nullable = false)
-    val name: String,
+    val fileName: String,
 
-    @ColumnTransformer(write = "?::jsonb")
-    @Column(columnDefinition = "jsonb", nullable = false)
-    val spectralData: String,
-
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val type: SpectralType,
+    val fileType: String,
+
+    @Lob
+    @Column(nullable = false)
+    val content: ByteArray,
+
+    @Column(columnDefinition = "jsonb", nullable = false)
+    val metadata: String, // Assuming metadata is stored as a JSON string
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
