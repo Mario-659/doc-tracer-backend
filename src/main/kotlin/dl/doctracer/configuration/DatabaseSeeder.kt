@@ -57,17 +57,31 @@ class DatabaseSeeder {
                     if (activeUser.username == "admin") {
                         val updatedRoles = activeUser.roles + adminRole + editorRole + viewerRole
                         activeUser.copy(roles = updatedRoles)
-                    }
-                    else activeUser
+                    } else activeUser
                 }
                 .map { updatedUser -> userRepository.save(updatedUser) }
 
             var devices = listOf(
-                Device(null, "VSC800-HS", "Designed to meet the requirements of immigration authorities, government agencies, and forensic science laboratories", "Foster + Freeman"),
+                Device(
+                    null,
+                    "VSC800-HS",
+                    "Designed to meet the requirements of immigration authorities, government agencies, and forensic science laboratories",
+                    "Foster + Freeman"
+                ),
                 Device(null, "LCMS-2050", "High-Performance Liquid Chromatograph Mass Spectrometer", "Shimadzu"),
                 Device(null, "NMR-500", "Nuclear Magnetic Resonance Spectrometer", "Bruker"),
-                Device(null, "Cary 60 UV-Vis", "The Cary 60 UV-Vis spectrophotometer is a double-beam instrument with a powerful xenon lamp that flashes 80 times per second. The xenon lamp only illuminates the sample when data is acquired, protecting sensitive samples from photodegradation, and reducing power consumption. The highly focused beam is ideal for measuring small sample volumes accurately and reproducibly.", "Agilent"),
-                Device(null, "inVia", "The ultimate research-grade confocal Raman microscope delivers outstanding performance and the best data in the shortest time", "RENISHAW")
+                Device(
+                    null,
+                    "Cary 60 UV-Vis",
+                    "The Cary 60 UV-Vis spectrophotometer is a double-beam instrument with a powerful xenon lamp that flashes 80 times per second. The xenon lamp only illuminates the sample when data is acquired, protecting sensitive samples from photodegradation, and reducing power consumption. The highly focused beam is ideal for measuring small sample volumes accurately and reproducibly.",
+                    "Agilent"
+                ),
+                Device(
+                    null,
+                    "inVia",
+                    "The ultimate research-grade confocal Raman microscope delivers outstanding performance and the best data in the shortest time",
+                    "RENISHAW"
+                )
             )
             devices = devices.map { deviceService.save(it) }
 
@@ -125,22 +139,53 @@ class DatabaseSeeder {
                 )
             ).map { measurementRepository.save(it) }
 
-            val samples = listOf(
+            val spectralDataList = listOf(
+                """
+                [
+                    { "wavelength": 400, "intensity": 26.06 },
+                    { "wavelength": 401, "intensity": 26.42 },
+                    { "wavelength": 402, "intensity": 26.82 },
+                    { "wavelength": 403, "intensity": 27.27 },
+                    { "wavelength": 404, "intensity": 27.71 },
+                    { "wavelength": 405, "intensity": 28.16 },
+                    { "wavelength": 406, "intensity": 28.65 },
+                    { "wavelength": 407, "intensity": 29.17 },
+                    { "wavelength": 408, "intensity": 29.72 },
+                    { "wavelength": 409, "intensity": 30.28 },
+                    { "wavelength": 410, "intensity": 30.85 }
+                ]
+                """.trimIndent(),
+                """
+                [
+                    { "wavelength": 400, "intensity": 25.10 },
+                    { "wavelength": 401, "intensity": 25.50 },
+                    { "wavelength": 402, "intensity": 25.90 },
+                    { "wavelength": 403, "intensity": 26.30 },
+                    { "wavelength": 404, "intensity": 26.70 },
+                    { "wavelength": 405, "intensity": 27.10 },
+                    { "wavelength": 406, "intensity": 27.50 },
+                    { "wavelength": 407, "intensity": 27.90 },
+                    { "wavelength": 408, "intensity": 28.30 },
+                    { "wavelength": 409, "intensity": 28.70 },
+                    { "wavelength": 410, "intensity": 29.10 }
+                ]
+                """.trimIndent()
+            )
+
+            val samples = spectralDataList.mapIndexed { index, json ->
                 Sample(
-                    null,
-                    measurement = measurements[0],
-                    name = "Sample A",
-                    spectralData = """{"wavelengths": [400, 500, 600], "intensities": [0.1, 0.2, 0.3]}""",
-                    type = SpectralType.REFLECTANCE
-                ),
-                Sample(
-                    null,
-                    measurement = measurements[1],
-                    name = "Sample B",
-                    spectralData = """{"wavelengths": [450, 550, 650], "intensities": [0.15, 0.25, 0.35]}""",
-                    type = SpectralType.ABSORPTION
+                    id = null,
+                    measurement = measurements[index],
+                    name = "Sample ${'A' + index}",
+                    spectralData = json,
+                    type = SpectralType.REFLECTANCE,
+                    createdAt = Instant.now(),
+                    updatedAt = Instant.now(),
+                    deletedAt = null
                 )
-            ).map { sampleRepository.save(it) }
+            }
+            samples.forEach { sampleRepository.save(it) }
+
 
             val files = listOf(
                 File(
