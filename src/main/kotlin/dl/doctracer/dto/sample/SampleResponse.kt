@@ -7,7 +7,7 @@ data class SampleResponse(
     val id: Int,
     val measurementId: Int,
     val name: String,
-    val spectralData: SpectralData,
+    val spectralData: String?,
     val type: SpectralType,
     val createdAt: Instant,
     val updatedAt: Instant

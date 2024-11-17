@@ -1,7 +1,6 @@
 package dl.doctracer.controller
 
 import dl.doctracer.dto.sample.CreateSampleRequest
-import dl.doctracer.dto.sample.SpectralData
 import dl.doctracer.dto.sample.SampleResponse
 import dl.doctracer.dto.sample.UpdateSampleRequest
 import dl.doctracer.service.SampleService
@@ -10,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/samples")
+@RequestMapping("/samples")
 class SampleController(
     private val sampleService: SampleService
 ) {

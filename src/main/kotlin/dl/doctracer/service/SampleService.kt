@@ -19,14 +19,14 @@ class SampleService(
 ) {
 
     fun getAllSamples(): List<SampleResponse> {
-        return sampleRepository.findAll().map { mapToSampleResponse(it) }
+        return sampleRepository.findAll().map { mapToSampleCompactResponse(it) }
     }
 
     fun getSampleById(id: Int): SampleResponse {
         val sample = sampleRepository.findById(id)
             .orElseThrow { EntityNotFoundException() }
 
-        return mapToSampleResponse(sample)
+        return mapToSampleDetailedResponse(sample)
     }
 
     fun createSample(request: CreateSampleRequest): SampleResponse {
@@ -44,7 +44,7 @@ class SampleService(
         )
 
         val savedSample = sampleRepository.save(newSample)
-        return mapToSampleResponse(savedSample)
+        return mapToSampleDetailedResponse(savedSample)
     }
 
     fun updateSample(id: Int, request: UpdateSampleRequest): SampleResponse {
@@ -60,7 +60,7 @@ class SampleService(
         )
 
         val savedSample = sampleRepository.save(updatedSample)
-        return mapToSampleResponse(savedSample)
+        return mapToSampleDetailedResponse(savedSample)
     }
 
     fun deleteSample(id: Int) {
@@ -70,12 +70,25 @@ class SampleService(
         sampleRepository.delete(sample)
     }
 
-    private fun mapToSampleResponse(sample: Sample): SampleResponse {
+    private fun mapToSampleDetailedResponse(sample: Sample): SampleResponse {
         return SampleResponse(
             id = sample.id!!,
             measurementId = sample.measurement.id!!,
             name = sample.name,
-            spectralData = spectralDataMapper.mapToResponse(sample.spectralData),
+            spectralData = sample.spectralData,
+            type = sample.type,
+            createdAt = sample.createdAt,
+            updatedAt = sample.updatedAt
+        )
+    }
+
+
+    private fun mapToSampleCompactResponse(sample: Sample): SampleResponse {
+        return SampleResponse(
+            id = sample.id!!,
+            measurementId = sample.measurement.id!!,
+            name = sample.name,
+            spectralData = null,
             type = sample.type,
             createdAt = sample.createdAt,
             updatedAt = sample.updatedAt
