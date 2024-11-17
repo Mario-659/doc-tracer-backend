@@ -22,7 +22,6 @@ class DatabaseSeeder {
         userAuthService: UserAuthService,
         userRepository: UserRepository,
         deviceService: DeviceService,
-        spectraTypeService: SpectraTypeService,
         sampleRepository: SampleRepository,
         coveredMaterialService: CoveredMaterialService,
         coveringMaterialService: CoveringMaterialService,

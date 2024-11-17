@@ -1,6 +1,7 @@
 package dl.doctracer.model
 
 import jakarta.persistence.*
+import org.hibernate.annotations.ColumnTransformer
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.Instant
@@ -26,8 +27,9 @@ data class File(
     @Column(nullable = false)
     val content: ByteArray,
 
+    @ColumnTransformer(write = "?::jsonb")
     @Column(columnDefinition = "jsonb", nullable = false)
-    val metadata: String, // Assuming metadata is stored as a JSON string
+    val metadata: String,
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
