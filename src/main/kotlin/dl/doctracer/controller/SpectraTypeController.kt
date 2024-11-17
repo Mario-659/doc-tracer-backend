@@ -1,16 +1,16 @@
 package dl.doctracer.controller
 
-import dl.doctracer.model.SpectraType
-import dl.doctracer.service.SpectraTypeService
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+//import dl.doctracer.model.SpectraType
+//import dl.doctracer.service.SpectraTypeService
+//import org.springframework.http.ResponseEntity
+////import org.springframework.web.bind.annotation.*
+//
+//@RestController
+//@RequestMapping("/spectra-types")
+//class SpectraTypeController(private val spectraTypeService: SpectraTypeService) {
 
-@RestController
-@RequestMapping("/spectra-types")
-class SpectraTypeController(private val spectraTypeService: SpectraTypeService) {
-
-    @GetMapping
-    fun getAllSpectraTypes(): List<SpectraType> = spectraTypeService.findAll()
+//    @GetMapping
+//    fun getAllSpectraTypes(): List<SpectraType> = spectraTypeService.findAll()
 
 //    @GetMapping("/{id}")
 //    fun getSpectraTypeById(@PathVariable id: Int): ResponseEntity<SpectraType> {
@@ -45,4 +45,4 @@ class SpectraTypeController(private val spectraTypeService: SpectraTypeService) 
 //            ResponseEntity.notFound().build()
 //        }
 //    }
-}
+//}

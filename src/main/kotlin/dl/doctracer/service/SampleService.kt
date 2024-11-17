@@ -1,108 +1,85 @@
 package dl.doctracer.service
 
+import dl.doctracer.dto.sample.CreateSampleRequest
 import dl.doctracer.dto.sample.SampleResponse
+import dl.doctracer.dto.sample.SpectralDataMapper
+import dl.doctracer.dto.sample.UpdateSampleRequest
 import dl.doctracer.exception.EntityNotFoundException
 import dl.doctracer.model.Sample
-import dl.doctracer.repository.CoveredMaterialRepository
-import dl.doctracer.repository.CoveringMaterialRepository
-import dl.doctracer.repository.SampleRepository
-import dl.doctracer.repository.UserRepository
+import dl.doctracer.repository.*
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 
 @Service
 class SampleService(
     private val sampleRepository: SampleRepository,
-    private val userRepository: UserRepository,
-    private val coveredMaterialRepository: CoveredMaterialRepository,
-    private val coveringMaterialRepository: CoveringMaterialRepository
+    private val measurementRepository: MeasurementRepository,
+    private val spectralDataMapper: SpectralDataMapper
 ) {
-    fun getAll(): List<SampleResponse> {
-        val samples = sampleRepository.findAll()
 
-        return samples.map { it -> mapToResponse(it)}
+    fun getAllSamples(): List<SampleResponse> {
+        return sampleRepository.findAll().map { mapToSampleResponse(it) }
     }
 
-    fun getById(id: Int): SampleResponse {
-        val sample = sampleRepository
-            .findById(id)
-            .orElseThrow { throw EntityNotFoundException() }
+    fun getSampleById(id: Int): SampleResponse {
+        val sample = sampleRepository.findById(id)
+            .orElseThrow { EntityNotFoundException() }
 
-        return mapToResponse(sample)
+        return mapToSampleResponse(sample)
     }
 
-    @Transactional
-    fun deleteById(id: Int) = sampleRepository.deleteById(id)
+    fun createSample(request: CreateSampleRequest): SampleResponse {
+        val measurement = measurementRepository.findById(request.measurementId)
+            .orElseThrow { EntityNotFoundException() }
 
-//    fun createSample(sampleRequest: CreateSampleRequest) {
-//        val user = userRepository
-//            .findByUsername(sampleRequest.username)
-//            ?: throw IllegalArgumentException("Username ${sampleRequest.username} not found")
-//
-//        val coveredMaterial = coveredMaterialRepository
-//            .findById(sampleRequest.coveredMaterialId)
-//            .orElseThrow { IllegalArgumentException("Covered material with id: ${sampleRequest.coveredMaterialId} not found") }
-//
-//        val coveringMaterial = coveringMaterialRepository
-//            .findById(sampleRequest.coveringMaterialId)
-//            .orElseThrow { IllegalArgumentException("Covering material with id: ${sampleRequest.coveringMaterialId} not found") }
-//
-//        val newSample = Sample(
-//            description = sampleRequest.description,
-//            sampleCreationDate = sampleRequest.sampleCreationDate,
-//            coveredMaterial = coveredMaterial,
-//            coveringMaterial = coveringMaterial,
-//            user = user
-//        )
-//
-//        sampleRepository.save(newSample)
-//    }
+        val newSample = Sample(
+            id = null,
+            measurement = measurement,
+            name = request.name,
+            spectralData = spectralDataMapper.map(request.spectralData),
+            type = request.type,
+            createdAt = Instant.now(),
+            updatedAt = Instant.now()
+        )
 
-//    fun updateSample(id: Int, updateSampleRequest: UpdateSampleRequest): SampleResponse {
-//        val existingSample = sampleRepository
-//            .findById(id)
-//            .orElseThrow { IllegalArgumentException("Sample with id: $id not found") }
-//
-//        val updatedUser = updateSampleRequest.username?.let { username ->
-//            userRepository.findByUsername(username)
-//                ?: throw IllegalArgumentException("Username $username not found")
-//        } ?: existingSample.user
-//
-//        val updatedCoveredMaterial = updateSampleRequest.coveredMaterialId?.let { coveredMaterialId ->
-//            coveredMaterialRepository.findById(coveredMaterialId)
-//                .orElseThrow { IllegalArgumentException("Covered material with id: $coveredMaterialId not found") }
-//        } ?: existingSample.coveredMaterial
-//
-//        val updatedCoveringMaterial = updateSampleRequest.coveringMaterialId?.let { coveringMaterialId ->
-//            coveringMaterialRepository.findById(coveringMaterialId)
-//                .orElseThrow { IllegalArgumentException("Covering material with id: $coveringMaterialId not found") }
-//        } ?: existingSample.coveringMaterial
-//
-//        val updatedSample = existingSample.copy(
-//            description = updateSampleRequest.description ?: existingSample.description,
-//            sampleCreationDate = updateSampleRequest.sampleCreationDate ?: existingSample.sampleCreationDate,
-//            user = updatedUser,
-//            coveredMaterial = updatedCoveredMaterial,
-//            coveringMaterial = updatedCoveringMaterial
-//        )
-//
-//        val savedSample = sampleRepository.save(updatedSample)
-//        return mapToResponse(savedSample)
-//    }
+        val savedSample = sampleRepository.save(newSample)
+        return mapToSampleResponse(savedSample)
+    }
 
-    private fun mapToResponse(sample: Sample): SampleResponse =
-        SampleResponse(
-            id = sample.id ?: -1,
-            description = sample.description,
-            sampleCreationDate = sample.sampleCreationDate,
-            coveredMaterialName = sample.coveredMaterial.name,
-            coveredMaterialId = sample.coveredMaterial.id ?: -1,
-            coveringMaterialName = sample.coveringMaterial.name,
-            coveringMaterialId = sample.coveringMaterial.id ?: -1,
-            createdBy = sample.user.username,
+    fun updateSample(id: Int, request: UpdateSampleRequest): SampleResponse {
+        val existingSample = sampleRepository.findById(id)
+            .orElseThrow { EntityNotFoundException() }
+
+
+        val updatedSample = existingSample.copy(
+            name = request.name ?: existingSample.name,
+            spectralData = request.spectralData?.let { spectralDataMapper.map(it) } ?: existingSample.spectralData,
+            type = request.type ?: existingSample.type,
+            updatedAt = Instant.now()
+        )
+
+        val savedSample = sampleRepository.save(updatedSample)
+        return mapToSampleResponse(savedSample)
+    }
+
+    fun deleteSample(id: Int) {
+        val sample = sampleRepository.findById(id)
+            .orElseThrow { EntityNotFoundException() }
+
+        sampleRepository.delete(sample)
+    }
+
+    private fun mapToSampleResponse(sample: Sample): SampleResponse {
+        return SampleResponse(
+            id = sample.id!!,
+            measurementId = sample.measurement.id!!,
+            name = sample.name,
+            spectralData = spectralDataMapper.mapToResponse(sample.spectralData),
+            type = sample.type,
             createdAt = sample.createdAt,
             updatedAt = sample.updatedAt
         )
+    }
 }
 
