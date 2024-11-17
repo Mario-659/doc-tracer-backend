@@ -140,42 +140,13 @@ class DatabaseSeeder {
             ).map { measurementRepository.save(it) }
 
             val spectralDataList = listOf(
-                """
-                [
-                    { "wavelength": 400, "intensity": 26.06 },
-                    { "wavelength": 401, "intensity": 26.42 },
-                    { "wavelength": 402, "intensity": 26.82 },
-                    { "wavelength": 403, "intensity": 27.27 },
-                    { "wavelength": 404, "intensity": 27.71 },
-                    { "wavelength": 405, "intensity": 28.16 },
-                    { "wavelength": 406, "intensity": 28.65 },
-                    { "wavelength": 407, "intensity": 29.17 },
-                    { "wavelength": 408, "intensity": 29.72 },
-                    { "wavelength": 409, "intensity": 30.28 },
-                    { "wavelength": 410, "intensity": 30.85 }
-                ]
-                """.trimIndent(),
-                """
-                [
-                    { "wavelength": 400, "intensity": 25.10 },
-                    { "wavelength": 401, "intensity": 25.50 },
-                    { "wavelength": 402, "intensity": 25.90 },
-                    { "wavelength": 403, "intensity": 26.30 },
-                    { "wavelength": 404, "intensity": 26.70 },
-                    { "wavelength": 405, "intensity": 27.10 },
-                    { "wavelength": 406, "intensity": 27.50 },
-                    { "wavelength": 407, "intensity": 27.90 },
-                    { "wavelength": 408, "intensity": 28.30 },
-                    { "wavelength": 409, "intensity": 28.70 },
-                    { "wavelength": 410, "intensity": 29.10 }
-                ]
-                """.trimIndent()
+                spectralDataOne, spectralDataTwo, spectralDataThree, spectralDataFour, spectralDataFive
             )
 
-            val samples = spectralDataList.mapIndexed { index, json ->
+            val samplesA = spectralDataList.mapIndexed { index, json ->
                 Sample(
                     id = null,
-                    measurement = measurements[index],
+                    measurement = measurements[0],
                     name = "Sample ${'A' + index}",
                     spectralData = json,
                     type = SpectralType.REFLECTANCE,
@@ -184,8 +155,22 @@ class DatabaseSeeder {
                     deletedAt = null
                 )
             }
-            samples.forEach { sampleRepository.save(it) }
+            samplesA.forEach { sampleRepository.save(it) }
 
+
+            val samplesB = spectralDataList.mapIndexed { index, json ->
+                Sample(
+                    id = null,
+                    measurement = measurements[0],
+                    name = "Sample ${'A' + index}",
+                    spectralData = json,
+                    type = SpectralType.REFLECTANCE,
+                    createdAt = Instant.now(),
+                    updatedAt = Instant.now(),
+                    deletedAt = null
+                )
+            }
+            samplesB.forEach { sampleRepository.save(it) }
 
             val files = listOf(
                 File(
@@ -201,7 +186,7 @@ class DatabaseSeeder {
                     measurement = measurements[1],
                     fileName = "measurement_2_image.png",
                     fileType = "image/png",
-                    content = ByteArray(0), // Replace with actual file content
+                    content = ByteArray(0),
                     metadata = """{"author": "editor", "tags": ["image", "analysis"]}"""
                 )
             ).map { fileRepository.save(it) }
