@@ -72,13 +72,17 @@ class DatabaseSeeder {
             devices = devices.map { deviceService.save(it) }
 
             var coveredMaterials = listOf(
-                CoveredMaterial(null, "Ballpoint Ink", "Standard black ballpoint pen ink"),
-                CoveredMaterial(null, "Gel Pen Ink", "Blue gel pen ink"),
-                CoveredMaterial(null, "Laser Toner", "Black laser printer toner"),
-                CoveredMaterial(null, "Fountain Pen Ink", "Green fountain pen ink"),
-                CoveredMaterial(null, "Stamp Ink", "Red stamp ink")
+                CoveredMaterial(null, "Standard White Paper", "Common office printing paper"),
+                CoveredMaterial(null, "Glossy Photo Paper", "High-gloss photo printing paper"),
+                CoveredMaterial(null, "Cardstock", "Thicker paper used for business cards and invitations"),
+                CoveredMaterial(null, "Recycled Paper", "Eco-friendly paper made from recycled materials"),
+                CoveredMaterial(null, "Tracing Paper", "Translucent paper used for design and drafting"),
+                CoveredMaterial(null, "Laminated Paper", "Paper coated with a thin layer of plastic for durability"),
+                CoveredMaterial(null, "Newsprint", "Thin paper commonly used for newspapers"),
+                CoveredMaterial(null, "Art Paper", "High-quality paper for professional artwork and illustrations")
             )
             coveredMaterials = coveredMaterials.map { coveredMaterialService.save(it) }
+
 
             var coveringMaterials = listOf(
                 CoveringMaterial(null, "Covering A", "Matte black toner", "HP", "Black"),
