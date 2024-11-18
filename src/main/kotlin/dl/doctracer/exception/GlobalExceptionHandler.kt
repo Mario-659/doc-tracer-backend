@@ -18,8 +18,8 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<Any> {
-        val errors = ex.bindingResult.fieldErrors.map { it.defaultMessage ?: "Invalid field" }
-        val errorMessage = errors.joinToString()
+        val errors = ex.bindingResult.fieldErrors.map { "field error in ${it.objectName}: ${it.defaultMessage ?: "invalid field"}"  }
+        val errorMessage = errors.joinToString(", ")
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse(errorMessage))
