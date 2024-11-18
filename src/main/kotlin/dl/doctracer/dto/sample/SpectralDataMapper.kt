@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class SpectralDataMapper {
-    fun map(request: SpectralData): String {
+    fun map(request: List<DataPoint>): String {
         return ObjectMapper().writeValueAsString(request)
     }
 }

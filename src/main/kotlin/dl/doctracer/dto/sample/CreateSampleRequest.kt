@@ -5,6 +5,6 @@ import dl.doctracer.model.SpectralType
 data class CreateSampleRequest(
     val measurementId: Int,
     val name: String,
-    val spectralData: SpectralData,
+    val spectralData: List<DataPoint>,
     val type: SpectralType
 )
