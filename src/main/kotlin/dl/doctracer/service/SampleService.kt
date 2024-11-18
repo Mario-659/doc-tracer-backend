@@ -22,6 +22,10 @@ class SampleService(
         return sampleRepository.findAll().map { mapToSampleCompactResponse(it) }
     }
 
+    fun getSamplesByMeasurementId(measurementId: Int): List<SampleResponse> {
+        return sampleRepository.findAllByMeasurementId(measurementId).map { mapToSampleCompactResponse(it) }
+    }
+
     fun getSampleById(id: Int): SampleResponse {
         val sample = sampleRepository.findById(id)
             .orElseThrow { EntityNotFoundException() }
