@@ -9,5 +9,6 @@ data class UpdateSampleRequest(
     @field:UniqueWavelengths
     @field:Valid
     val spectralData: List<@Valid DataPoint>?,
-    val type: SpectralType?
+    val type: SpectralType?,
+    val measurementId: Int?
 )

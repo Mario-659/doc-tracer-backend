@@ -55,12 +55,17 @@ class SampleService(
         val existingSample = sampleRepository.findById(id)
             .orElseThrow { EntityNotFoundException() }
 
+        val measurement = request.measurementId?.let {
+            measurementRepository.findById(it)
+                .orElseThrow { EntityNotFoundException() }
+        }
 
         val updatedSample = existingSample.copy(
             name = request.name ?: existingSample.name,
             spectralData = request.spectralData?.let { spectralDataMapper.map(it) } ?: existingSample.spectralData,
             type = request.type ?: existingSample.type,
-            updatedAt = Instant.now()
+            updatedAt = Instant.now(),
+            measurement = measurement ?: existingSample.measurement
         )
 
         val savedSample = sampleRepository.save(updatedSample)
