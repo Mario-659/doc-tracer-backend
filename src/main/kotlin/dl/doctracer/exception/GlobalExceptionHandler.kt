@@ -5,6 +5,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -30,6 +31,14 @@ class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.UNAUTHORIZED)
             .body(ErrorResponse("Invalid username or password"))
+    }
+
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<Any> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse("Invalid HTTP payload"))
     }
 
     @ExceptionHandler(EntityNotFoundException::class)
