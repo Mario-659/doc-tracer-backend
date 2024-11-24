@@ -2,6 +2,7 @@ package dl.doctracer.controller
 
 import dl.doctracer.dto.measurement.MeasurementRequest
 import dl.doctracer.dto.measurement.MeasurementResponse
+import dl.doctracer.dto.measurement.UpdateMeasurementRequest
 import dl.doctracer.dto.sample.SampleResponse
 import dl.doctracer.model.Sample
 import dl.doctracer.service.MeasurementService
@@ -38,9 +39,9 @@ class MeasurementsController(
     @PutMapping("/{id}")
     fun updateMeasurement(
         @PathVariable id: Int,
-        @RequestBody measurementRequest: MeasurementRequest
+        @RequestBody updateMeasurementRequest: UpdateMeasurementRequest
     ): MeasurementResponse {
-        return measurementService.updateMeasurement(id, measurementRequest)
+        return measurementService.updateMeasurement(id, updateMeasurementRequest)
     }
 
     @DeleteMapping("/{id}")
