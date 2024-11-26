@@ -43,14 +43,13 @@ class MeasurementService(
         val coveredMaterial = coveredMaterialService.findById(request.coveredMaterialId)
             ?: throw EntityNotFoundException()
 
-        val user = userRepository.findById(request.userId)
-            .orElseThrow { EntityNotFoundException() }
+        val user = userRepository.findByUsername(request.username)
+            ?: throw EntityNotFoundException()
 
         val device = deviceRepository.findById(request.deviceId)
             .orElseThrow { EntityNotFoundException() }
 
-        val conditions = measurementConditionsRepository.findById(request.conditionsId)
-            .orElseThrow { EntityNotFoundException() }
+        val conditions = measurementConditionsRepository.save(request.conditions)
 
         val measurement = Measurement(
             coveringMaterial = coveringMaterial,
