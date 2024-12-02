@@ -7,10 +7,7 @@ import dl.doctracer.dto.measurement.UpdateMeasurementRequest
 import dl.doctracer.exception.EntityNotFoundException
 import dl.doctracer.model.Measurement
 import dl.doctracer.model.MeasurementConditions
-import dl.doctracer.repository.DeviceRepository
-import dl.doctracer.repository.MeasurementConditionsRepository
-import dl.doctracer.repository.MeasurementRepository
-import dl.doctracer.repository.UserRepository
+import dl.doctracer.repository.*
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -21,7 +18,8 @@ class MeasurementService(
     private val deviceRepository: DeviceRepository,
     private val coveringMaterialService: CoveringMaterialService,
     private val coveredMaterialService: CoveredMaterialService,
-    private val measurementConditionsRepository: MeasurementConditionsRepository
+    private val measurementConditionsRepository: MeasurementConditionsRepository,
+    private val sampleRepository: SampleRepository
 ) {
 
     fun getAllMeasurements(): List<MeasurementResponse> {
@@ -96,7 +94,10 @@ class MeasurementService(
     fun deleteMeasurement(id: Int) {
         val measurement = measurementRepository.findById(id)
             .orElseThrow { EntityNotFoundException() }
+
+        sampleRepository.findAllByMeasurementId(id).forEach { sampleRepository.delete(it) }
         measurementRepository.delete(measurement)
+        measurementConditionsRepository.delete(measurement.conditions)
     }
 
     private fun toMeasurementResponse(measurement: Measurement): MeasurementResponse {
