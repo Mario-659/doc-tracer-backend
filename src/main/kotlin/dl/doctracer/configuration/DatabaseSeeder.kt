@@ -30,7 +30,7 @@ class DatabaseSeeder {
         roleRepository: RoleRepository,
         measurementConditionsRepository: MeasurementConditionsRepository,
         measurementRepository: MeasurementRepository,
-        fileRepository: FileRepository
+//        fileRepository: FileRepository
     ): CommandLineRunner {
         return CommandLineRunner {
             logger.info("Initializing database with mock data")
@@ -367,24 +367,24 @@ class DatabaseSeeder {
                 )
             )
 
-            val files = listOf(
-                File(
-                    null,
-                    measurement = measurements[0],
-                    fileName = "measurement_1_data.json",
-                    fileType = "application/json",
-                    content = """{"example": "data"}""".toByteArray(),
-                    metadata = """{"author": "admin", "tags": ["test", "measurement"]}"""
-                ),
-                File(
-                    null,
-                    measurement = measurements[1],
-                    fileName = "measurement_2_image.png",
-                    fileType = "image/png",
-                    content = ByteArray(0),
-                    metadata = """{"author": "editor", "tags": ["image", "analysis"]}"""
-                )
-            ).map { fileRepository.save(it) }
+//            val files = listOf(
+//                File(
+//                    null,
+//                    measurement = measurements[0],
+//                    fileName = "measurement_1_data.json",
+//                    fileType = "application/json",
+//                    content = """{"example": "data"}""".toByteArray(),
+//                    metadata = """{"author": "admin", "tags": ["test", "measurement"]}"""
+//                ),
+//                File(
+//                    null,
+//                    measurement = measurements[1],
+//                    fileName = "measurement_2_image.png",
+//                    fileType = "image/png",
+//                    content = ByteArray(0),
+//                    metadata = """{"author": "editor", "tags": ["image", "analysis"]}"""
+//                )
+//            ).map { fileRepository.save(it) }
 
             logger.info("Mock data has been initialized")
         }
