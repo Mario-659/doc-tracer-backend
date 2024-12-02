@@ -112,6 +112,48 @@ class DatabaseSeeder {
                     imageMode = 1,
                     lightSource = 1,
                     description = "Default measurement settings"
+                ),
+                MeasurementConditions(
+                    null,
+                    imageMode = 2,
+                    lightSource = 1,
+                    description = "High-resolution mode with standard light source"
+                ),
+                MeasurementConditions(
+                    null,
+                    imageMode = 3,
+                    lightSource = 2,
+                    description = "Infrared imaging with alternate light source"
+                ),
+                MeasurementConditions(
+                    null,
+                    imageMode = 4,
+                    lightSource = 3,
+                    description = "UV imaging for fluorescence analysis"
+                ),
+                MeasurementConditions(
+                    null,
+                    imageMode = 1,
+                    lightSource = 4,
+                    description = "Polarized light with enhanced contrast"
+                ),
+                MeasurementConditions(
+                    null,
+                    imageMode = 5,
+                    lightSource = 1,
+                    description = "Low-light mode for sensitive samples"
+                ),
+                MeasurementConditions(
+                    null,
+                    imageMode = 2,
+                    lightSource = 3,
+                    description = "Extended wavelength range for material differentiation"
+                ),
+                MeasurementConditions(
+                    null,
+                    imageMode = 3,
+                    lightSource = 4,
+                    description = "Custom settings for experimental purposes"
                 )
             ).map { measurementConditionsRepository.save(it) }
 
@@ -132,9 +174,69 @@ class DatabaseSeeder {
                     coveredMaterial = coveredMaterials[1],
                     user = users[1],
                     device = devices[1],
-                    conditions = measurementConditions[0],
+                    conditions = measurementConditions[1],
                     measurementDate = Instant.now(),
                     comments = "Another test measurement"
+                ),
+                Measurement(
+                    null,
+                    coveringMaterial = coveringMaterials[2],
+                    coveredMaterial = coveredMaterials[2],
+                    user = users[2],
+                    device = devices[2],
+                    conditions = measurementConditions[2],
+                    measurementDate = Instant.now(),
+                    comments = "Testing green ink on cardstock"
+                ),
+                Measurement(
+                    null,
+                    coveringMaterial = coveringMaterials[3],
+                    coveredMaterial = coveredMaterials[3],
+                    user = users[0],
+                    device = devices[3],
+                    conditions = measurementConditions[3],
+                    measurementDate = Instant.now(),
+                    comments = "Analyzing blue ink on recycled paper"
+                ),
+                Measurement(
+                    null,
+                    coveringMaterial = coveringMaterials[4],
+                    coveredMaterial = coveredMaterials[4],
+                    user = users[1],
+                    device = devices[4],
+                    conditions = measurementConditions[4],
+                    measurementDate = Instant.now(),
+                    comments = "Evaluating black ink on tracing paper"
+                ),
+                Measurement(
+                    null,
+                    coveringMaterial = coveringMaterials[0],
+                    coveredMaterial = coveredMaterials[5],
+                    user = users[0],
+                    device = devices[0],
+                    conditions = measurementConditions[5],
+                    measurementDate = Instant.now(),
+                    comments = "Black toner on laminated paper"
+                ),
+                Measurement(
+                    null,
+                    coveringMaterial = coveringMaterials[1],
+                    coveredMaterial = coveredMaterials[6],
+                    user = users[1],
+                    device = devices[1],
+                    conditions = measurementConditions[6],
+                    measurementDate = Instant.now(),
+                    comments = "Red ink on newsprint"
+                ),
+                Measurement(
+                    null,
+                    coveringMaterial = coveringMaterials[3],
+                    coveredMaterial = coveredMaterials[7],
+                    user = users[2],
+                    device = devices[2],
+                    conditions = measurementConditions[7],
+                    measurementDate = Instant.now(),
+                    comments = "Green ink on art paper"
                 )
             ).map { measurementRepository.save(it) }
 
@@ -146,9 +248,9 @@ class DatabaseSeeder {
                 Sample(
                     id = null,
                     measurement = measurements[0],
-                    name = "Sample ${'A' + index}",
+                    name = "Sample ${'A' + index} - M1",
                     spectralData = json,
-                    type = SpectralType.REFLECTANCE,
+                    type = SpectralType.ABSORPTION,
                     createdAt = Instant.now(),
                     updatedAt = Instant.now(),
                     deletedAt = null
@@ -160,8 +262,8 @@ class DatabaseSeeder {
             val samplesB = spectralDataList.mapIndexed { index, json ->
                 Sample(
                     id = null,
-                    measurement = measurements[0],
-                    name = "Sample ${'A' + index}",
+                    measurement = measurements[1],
+                    name = "Sample ${'A' + index} - M2",
                     spectralData = json,
                     type = SpectralType.REFLECTANCE,
                     createdAt = Instant.now(),
@@ -170,6 +272,78 @@ class DatabaseSeeder {
                 )
             }
             samplesB.forEach { sampleRepository.save(it) }
+
+
+            val samples3 = spectralDataList.mapIndexed { index, json ->
+                Sample(
+                    id = null,
+                    measurement = measurements[2],
+                    name = "Sample ${'A' + index} - M3",
+                    spectralData = json,
+                    type = SpectralType.FLUORESCENCE,
+                    createdAt = Instant.now(),
+                    updatedAt = Instant.now(),
+                    deletedAt = null
+                )
+            }
+            samples3.forEach { sampleRepository.save(it) }
+
+            sampleRepository.save(Sample(
+                id = null,
+                measurement = measurements[3],
+                name = "Sample Fluorescence",
+                spectralData = spectralDataList[0],
+                type = SpectralType.FLUORESCENCE,
+                createdAt = Instant.now(),
+                updatedAt = Instant.now(),
+                deletedAt = null
+            ))
+
+            sampleRepository.save(Sample(
+                id = null,
+                measurement = measurements[4],
+                name = "Sample Average",
+                spectralData = spectralDataList[1],
+                type = SpectralType.AVERAGE,
+                createdAt = Instant.now(),
+                updatedAt = Instant.now(),
+                deletedAt = null
+            ))
+
+            sampleRepository.save(Sample(
+                id = null,
+                measurement = measurements[5],
+                name = "Sample Differential - M6",
+                spectralData = spectralDataList[2],
+                type = SpectralType.DIFFERENTIAL,
+                createdAt = Instant.now(),
+                updatedAt = Instant.now(),
+                deletedAt = null
+            ))
+
+
+            sampleRepository.save(Sample(
+                id = null,
+                measurement = measurements[6],
+                name = "Sample A Normalised - M7",
+                spectralData = spectralDataList[4],
+                type = SpectralType.NORMALISED,
+                createdAt = Instant.now(),
+                updatedAt = Instant.now(),
+                deletedAt = null
+            ))
+
+
+            sampleRepository.save(Sample(
+                id = null,
+                measurement = measurements[7],
+                name = "Sample A - M8",
+                spectralData = spectralDataList[3],
+                type = SpectralType.TRANSMITTANCE,
+                createdAt = Instant.now(),
+                updatedAt = Instant.now(),
+                deletedAt = null
+            ))
 
             val files = listOf(
                 File(
