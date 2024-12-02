@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Configuration
 @Profile("dev")
@@ -157,6 +159,17 @@ class DatabaseSeeder {
                 )
             ).map { measurementConditionsRepository.save(it) }
 
+            val specificDates = listOf(
+                LocalDateTime.of(2024, 10, 5, 10, 30).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2024, 10, 15, 14, 45).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2024, 11, 1, 9, 0).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2024, 11, 20, 16, 20).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2024, 12, 5, 11, 15).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2024, 12, 10, 13, 30).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2024, 12, 15, 15, 0).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2024, 12, 20, 18, 10).toInstant(ZoneOffset.UTC)
+            )
+
             val measurements = listOf(
                 Measurement(
                     null,
@@ -165,7 +178,7 @@ class DatabaseSeeder {
                     user = users[0],
                     device = devices[0],
                     conditions = measurementConditions[0],
-                    measurementDate = Instant.now(),
+                    measurementDate = specificDates[0],
                     comments = "Test measurement"
                 ),
                 Measurement(
@@ -175,7 +188,7 @@ class DatabaseSeeder {
                     user = users[1],
                     device = devices[1],
                     conditions = measurementConditions[1],
-                    measurementDate = Instant.now(),
+                    measurementDate = specificDates[1],
                     comments = "Another test measurement"
                 ),
                 Measurement(
@@ -185,7 +198,7 @@ class DatabaseSeeder {
                     user = users[2],
                     device = devices[2],
                     conditions = measurementConditions[2],
-                    measurementDate = Instant.now(),
+                    measurementDate = specificDates[2],
                     comments = "Testing green ink on cardstock"
                 ),
                 Measurement(
@@ -195,7 +208,7 @@ class DatabaseSeeder {
                     user = users[0],
                     device = devices[3],
                     conditions = measurementConditions[3],
-                    measurementDate = Instant.now(),
+                    measurementDate = specificDates[3],
                     comments = "Analyzing blue ink on recycled paper"
                 ),
                 Measurement(
@@ -205,7 +218,7 @@ class DatabaseSeeder {
                     user = users[1],
                     device = devices[4],
                     conditions = measurementConditions[4],
-                    measurementDate = Instant.now(),
+                    measurementDate = specificDates[4],
                     comments = "Evaluating black ink on tracing paper"
                 ),
                 Measurement(
@@ -215,7 +228,7 @@ class DatabaseSeeder {
                     user = users[0],
                     device = devices[0],
                     conditions = measurementConditions[5],
-                    measurementDate = Instant.now(),
+                    measurementDate = specificDates[5],
                     comments = "Black toner on laminated paper"
                 ),
                 Measurement(
@@ -225,7 +238,7 @@ class DatabaseSeeder {
                     user = users[1],
                     device = devices[1],
                     conditions = measurementConditions[6],
-                    measurementDate = Instant.now(),
+                    measurementDate = specificDates[6],
                     comments = "Red ink on newsprint"
                 ),
                 Measurement(
@@ -235,7 +248,7 @@ class DatabaseSeeder {
                     user = users[2],
                     device = devices[2],
                     conditions = measurementConditions[7],
-                    measurementDate = Instant.now(),
+                    measurementDate = specificDates[7],
                     comments = "Green ink on art paper"
                 )
             ).map { measurementRepository.save(it) }
@@ -251,13 +264,12 @@ class DatabaseSeeder {
                     name = "Sample ${'A' + index} - M1",
                     spectralData = json,
                     type = SpectralType.ABSORPTION,
-                    createdAt = Instant.now(),
-                    updatedAt = Instant.now(),
+                    createdAt = specificDates[index % specificDates.size],
+                    updatedAt = specificDates[index % specificDates.size],
                     deletedAt = null
                 )
             }
             samplesA.forEach { sampleRepository.save(it) }
-
 
             val samplesB = spectralDataList.mapIndexed { index, json ->
                 Sample(
@@ -266,8 +278,8 @@ class DatabaseSeeder {
                     name = "Sample ${'A' + index} - M2",
                     spectralData = json,
                     type = SpectralType.REFLECTANCE,
-                    createdAt = Instant.now(),
-                    updatedAt = Instant.now(),
+                    createdAt = specificDates[index % specificDates.size],
+                    updatedAt = specificDates[index % specificDates.size],
                     deletedAt = null
                 )
             }
@@ -288,62 +300,72 @@ class DatabaseSeeder {
             }
             samples3.forEach { sampleRepository.save(it) }
 
-            sampleRepository.save(Sample(
-                id = null,
-                measurement = measurements[3],
-                name = "Sample Fluorescence",
-                spectralData = spectralDataList[0],
-                type = SpectralType.FLUORESCENCE,
-                createdAt = Instant.now(),
-                updatedAt = Instant.now(),
-                deletedAt = null
-            ))
+            sampleRepository.save(
+                Sample(
+                    id = null,
+                    measurement = measurements[3],
+                    name = "Sample Fluorescence",
+                    spectralData = spectralDataList[0],
+                    type = SpectralType.FLUORESCENCE,
+                    createdAt = Instant.now(),
+                    updatedAt = Instant.now(),
+                    deletedAt = null
+                )
+            )
 
-            sampleRepository.save(Sample(
-                id = null,
-                measurement = measurements[4],
-                name = "Sample Average",
-                spectralData = spectralDataList[1],
-                type = SpectralType.AVERAGE,
-                createdAt = Instant.now(),
-                updatedAt = Instant.now(),
-                deletedAt = null
-            ))
+            sampleRepository.save(
+                Sample(
+                    id = null,
+                    measurement = measurements[4],
+                    name = "Sample Average",
+                    spectralData = spectralDataList[1],
+                    type = SpectralType.AVERAGE,
+                    createdAt = Instant.now(),
+                    updatedAt = Instant.now(),
+                    deletedAt = null
+                )
+            )
 
-            sampleRepository.save(Sample(
-                id = null,
-                measurement = measurements[5],
-                name = "Sample Differential - M6",
-                spectralData = spectralDataList[2],
-                type = SpectralType.DIFFERENTIAL,
-                createdAt = Instant.now(),
-                updatedAt = Instant.now(),
-                deletedAt = null
-            ))
-
-
-            sampleRepository.save(Sample(
-                id = null,
-                measurement = measurements[6],
-                name = "Sample A Normalised - M7",
-                spectralData = spectralDataList[4],
-                type = SpectralType.NORMALISED,
-                createdAt = Instant.now(),
-                updatedAt = Instant.now(),
-                deletedAt = null
-            ))
+            sampleRepository.save(
+                Sample(
+                    id = null,
+                    measurement = measurements[5],
+                    name = "Sample Differential - M6",
+                    spectralData = spectralDataList[2],
+                    type = SpectralType.DIFFERENTIAL,
+                    createdAt = Instant.now(),
+                    updatedAt = Instant.now(),
+                    deletedAt = null
+                )
+            )
 
 
-            sampleRepository.save(Sample(
-                id = null,
-                measurement = measurements[7],
-                name = "Sample A - M8",
-                spectralData = spectralDataList[3],
-                type = SpectralType.TRANSMITTANCE,
-                createdAt = Instant.now(),
-                updatedAt = Instant.now(),
-                deletedAt = null
-            ))
+            sampleRepository.save(
+                Sample(
+                    id = null,
+                    measurement = measurements[6],
+                    name = "Sample A Normalised - M7",
+                    spectralData = spectralDataList[4],
+                    type = SpectralType.NORMALISED,
+                    createdAt = Instant.now(),
+                    updatedAt = Instant.now(),
+                    deletedAt = null
+                )
+            )
+
+
+            sampleRepository.save(
+                Sample(
+                    id = null,
+                    measurement = measurements[7],
+                    name = "Sample A - M8",
+                    spectralData = spectralDataList[3],
+                    type = SpectralType.TRANSMITTANCE,
+                    createdAt = Instant.now(),
+                    updatedAt = Instant.now(),
+                    deletedAt = null
+                )
+            )
 
             val files = listOf(
                 File(
