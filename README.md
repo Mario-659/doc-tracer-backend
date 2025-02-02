@@ -67,15 +67,10 @@
 
 ### Building and Running
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/<your-username>/doctracer.git
-   cd doctracer
-   ```
-2. **Configure the application**:
+1. **Configure the application**:
     - Set up your application properties (in `application.properties`) for your database connection and JWT secret.
 
-3. **Run the application**:
+2. **Run the application**:
     - **Using Maven**:
       ```bash
       mvn spring-boot:run
@@ -84,8 +79,8 @@
       ```bash
       ./gradlew bootRun
       ```
-4. Check the logs to confirm the application started successfully on the default port `8080`.
-5. Test the API by accessing, for instance, `http://localhost:8080/auth/login`.
+3. Check the logs to confirm the application started successfully on the default port `8080`.
+4. Test the API by accessing, for instance, `http://localhost:8080/auth/login`.
 
 ### Profiles
 
