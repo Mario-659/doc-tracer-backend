@@ -1,6 +1,8 @@
 # Doctracer
 
-**Doctracer** is a Spring Boot application written in Kotlin that provides a RESTful API for managing and analyzing document measurements, materials, and spectral data. This application was made in the scope of an engineering thesis. It includes:
+**Doctracer** is a Spring Boot application written in Kotlin that provides a RESTful API for managing and analyzing document measurements, materials, and spectral data. This application was made in the scope of an engineering thesis. Frontend part available at [doc-tracer-frontend](https://github.com/Mario-659/doc-tracer-frontend).
+
+Project includes:
 
 - User authentication with JWT tokens (including roles and permissions).
 - Database entities for devices, covered materials, covering materials, measurements, and samples.
